@@ -8,7 +8,7 @@
       <div class="row justify-content-between">
         <div class="col-lg-5">
           <div class="intro-excerpt">
-            <h1>Shop</h1>
+            <h1>Loja</h1>
           </div>
         </div>
         <div class="col-lg-7">
@@ -23,7 +23,7 @@
       <div class="row">
         <% for (const product of products) { %>
           <div class="col-12 col-md-4 col-lg-3 mb-5">
-						<a class="product-item" href="#">
+						<a class="product-item" href="#" type="button" data-toggle="modal" data-target="#viewProductModal<%= product.id %>">
               <img src="<%= product.image %>" class="img-fluid product-thumbnail">
 
 							<h3 class="product-title"><%= product.name %></h3>
@@ -33,18 +33,12 @@
               <strong class="product-price">R$ <%= product.price %></strong>
 
               <span class="icon-cross">
-              <img src="assets/images/cross.svg" class="img-fluid">
-            </span>
+                <img src="assets/images/cross.svg" class="img-fluid">
+              </span>
 						</a>
-					</div> 
-          <!-- <div class="card">
-            <div class="card-body">
-              <h5 class="card-title"><%= product.name %></h5>
-              <p class="card-text"><%= product.description %></p>
-              <p class="card-text"><%= product.price %></p>
-              <a href="#" class="btn btn-primary">Comprar</a>
-            </div>
-          </div> -->
+					</div>
+
+          <%- include('../partials/viewProduct.modal.ejs', { product: product }) %>
         <% } %>
       </div>
     </div>

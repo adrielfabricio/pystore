@@ -1,7 +1,7 @@
 (function() {
 	'use strict';
 
-	var tinyslider = function() {
+	const tinyslider = function() {
 		var el = document.querySelectorAll('.testimonial-slider');
 
 		if (el.length > 0) {
@@ -23,11 +23,8 @@
 	};
 	tinyslider();
 
-	
 
-
-	var sitePlusMinus = function() {
-
+	const sitePlusMinus = function() {
 		var value,
     		quantity = document.getElementsByClassName('quantity-container');
 
@@ -69,5 +66,8 @@
 	};
 	sitePlusMinus();
 
+	const openModal = function() {
 
+	};
+	openModal();
 })()

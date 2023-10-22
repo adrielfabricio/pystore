@@ -13,11 +13,15 @@ const connection = mysql.createConnection(config);
 app.set('view engine', 'ejs');
 app.use('/assets', express.static('assets'));
 
-// index page
+// home page
 app.get('/', (req, res) => {
-  res.render('pages/index', {
+  res.render('pages/home', {
     products: products
   });
+});
+
+app.get('/services', (req, res) => {
+  res.render('pages/services');
 });
 
 // create product
