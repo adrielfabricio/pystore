@@ -1,6 +1,6 @@
 const CategoriaProduto = require('../model/CategoriaProduto.js');
 const Parceiro = require('../model/Parceiro.js');
-const Pedidos = require('../model/Pedidos.js');
+const Pedidos = require('../model/Pedido.js');
 const Produto = require('../model/Produto.js');
 const ProdutosPedidos = require('../model/ProdutosPedidos.js');
 const TipoUsuario = require('../model/TipoUsuario.js');

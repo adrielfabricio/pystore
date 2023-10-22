@@ -73,7 +73,7 @@ async function list_all() {
   let product_list = [];
   return new Promise((resolve, reject) => {
     db.query('SELECT produtos.*, categoria_produto.nome AS categoria FROM produtos INNER JOIN categoria_produto ON produtos.categoria_id = categoria_produto.id', async function (error, collection) {
-      for (const item of collection) {
+      for (let item of collection) {
         let product = new Produto(
           item.id,
           item.nome,
