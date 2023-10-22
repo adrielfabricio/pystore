@@ -3,7 +3,7 @@ const config = {
   port: 3306,
   user: 'root',
   password: 'password',
-  database: 'pystore',
+  database: 'db_pystore',
 };
 
 module.exports = { config };
