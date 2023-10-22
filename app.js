@@ -1,11 +1,17 @@
 const express = require('express');
-const app = express();
+const mysql = require('mysql');
+
+const { port } = require('./config/constants');
+const { config } = require('./config/database');
 const { products } = require('./config/mock');
 
-const port = 8080;
+const app = express();
+const connection = mysql.createConnection(config);
+// connection.connect();
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');
+app.use('/assets', express.static('assets'));
 
 // index page
 app.get('/', (req, res) => {
