@@ -16,7 +16,13 @@ app.use('/assets', express.static('assets'));
 // home page
 app.get('/', (req, res) => {
   res.render('pages/home', {
-    products: products
+    products: products,
+  });
+});
+
+app.get('/admin', (req, res) => {
+  res.render('pages/admin', {
+    products: products,
   });
 });
 

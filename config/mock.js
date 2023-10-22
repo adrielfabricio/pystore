@@ -6,6 +6,7 @@ const products = [
     price: 20,
     category: 'Acessórios',
     status: 'Em estoque',
+    stock: 20,
     image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Python.svg/640px-Python.svg.png',
   },
   {
@@ -15,6 +16,7 @@ const products = [
     price: 20,
     category: 'Acessórios',
     status: 'Em estoque',
+    stock: 15,
     image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Python.svg/640px-Python.svg.png',
   },
   {
@@ -24,6 +26,7 @@ const products = [
     price: 50,
     category: 'Vestuário',
     status: 'Em estoque',
+    stock: 3,
     image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Python.svg/640px-Python.svg.png',
   },
   {
@@ -33,6 +36,7 @@ const products = [
     price: 30,
     category: 'Livros',
     status: 'Em estoque',
+    stock: 7,
     image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Python.svg/640px-Python.svg.png',
   },
   {
@@ -42,6 +46,7 @@ const products = [
     price: 15,
     category: 'Acessórios',
     status: 'Em estoque',
+    stock: 10,
     image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Python.svg/640px-Python.svg.png',
   },
   {
@@ -51,6 +56,7 @@ const products = [
     price: 10,
     category: 'Acessórios',
     status: 'Em estoque',
+    stock: 13,
     image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Python.svg/640px-Python.svg.png',
   },
   {
@@ -60,6 +66,7 @@ const products = [
     price: 5,
     category: 'Acessórios',
     status: 'Em estoque',
+    stock: 50,
     image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Python.svg/640px-Python.svg.png',
   },
   {
@@ -69,6 +76,7 @@ const products = [
     price: 40,
     category: 'Acessórios',
     status: 'Em estoque',
+    stock: 23,
     image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Python.svg/640px-Python.svg.png',
   },
   {
@@ -78,6 +86,7 @@ const products = [
     price: 8,
     category: 'Acessórios',
     status: 'Em estoque',
+    stock: 11,
     image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Python.svg/640px-Python.svg.png',
   },
   {
@@ -87,6 +96,7 @@ const products = [
     price: 25,
     category: 'Vestuário',
     status: 'Em estoque',
+    stock: 19,
     image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Python.svg/640px-Python.svg.png',
   },
 ];

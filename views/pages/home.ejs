@@ -1,49 +1,55 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<%- include('../partials/head.ejs') %>
-<body>
-  <%- include('../partials/nav.ejs') %>
-  <div class="hero">
-    <div class="container">
-      <div class="row justify-content-between">
-        <div class="col-lg-5">
-          <div class="intro-excerpt">
-            <h1>Loja</h1>
+  <%- include('../partials/head.ejs') %>
+  <body>
+    <%- include('../partials/nav.ejs') %>
+    <div class="hero">
+      <div class="container">
+        <div class="row justify-content-between">
+          <div class="col-lg-5">
+            <div class="intro-excerpt">
+              <h1>Loja</h1>
+            </div>
           </div>
-        </div>
-        <div class="col-lg-7">
-          
+          <div class="col-lg-7"></div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="untree_co-section product-section before-footer-section">
-    <div class="container">
-      <div class="row">
-        <% for (const product of products) { %>
+    <div class="untree_co-section product-section before-footer-section">
+      <div class="container">
+        <div class="row">
+          <% for (const product of products) { %>
           <div class="col-12 col-md-4 col-lg-3 mb-5">
-						<a class="product-item" href="#" type="button" data-toggle="modal" data-target="#viewProductModal<%= product.id %>">
-              <img src="<%= product.image %>" class="img-fluid product-thumbnail">
+            <a
+              class="product-item"
+              href="#"
+              type="button"
+              data-toggle="modal"
+              data-target="#viewProductModal<%= product.id %>">
+              <img
+                src="<%= product.image %>"
+                class="img-fluid product-thumbnail" />
 
-							<h3 class="product-title"><%= product.name %></h3>
-              <span class="product-description"><%= product.description %></span>
+              <h3 class="product-title"><%= product.name %></h3>
+              <span class="product-description"
+                ><%= product.description %></span>
               <br />
               <br />
               <strong class="product-price">R$ <%= product.price %></strong>
 
               <span class="icon-cross">
-                <img src="assets/images/cross.svg" class="img-fluid">
+                <img src="assets/images/cross.svg" class="img-fluid" />
               </span>
-						</a>
-					</div>
+            </a>
+          </div>
 
           <%- include('../partials/viewProduct.modal.ejs', { product: product }) %>
-        <% } %>
+          <% } %>
+        </div>
       </div>
     </div>
-  </div>
 
-  <%- include('../partials/scripts.ejs') %>
-</body>
+    <%- include('../partials/scripts.ejs') %>
+  </body>
 </html>
