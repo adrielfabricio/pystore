@@ -3,26 +3,28 @@ const mysql = require('mysql');
 
 const { port } = require('./config/constants');
 const { config } = require('./config/database');
-const { products } = require('./config/mock');
+const { products, customers } = require('./config/mock');
 
 const app = express();
 const connection = mysql.createConnection(config);
 // connection.connect();
 
-// set the view engine to ejs
+// globals
+global.isAdmin = false;
+
 app.set('view engine', 'ejs');
 app.use('/assets', express.static('assets'));
 
-// home page
 app.get('/', (req, res) => {
   res.render('pages/home', {
-    products: products,
+    products,
   });
 });
 
 app.get('/admin', (req, res) => {
   res.render('pages/admin', {
-    products: products,
+    isAdmin: true,
+    products,
   });
 });
 
@@ -30,12 +32,17 @@ app.get('/services', (req, res) => {
   res.render('pages/services');
 });
 
-// create product
+app.get('/customers', (req, res) => {
+  res.render('pages/customers', {
+    isAdmin: true,
+    customers,
+  });
+});
+
 app.post('/products', (req, res) => {
   // ...
 });
 
-// product details
 app.get('/products/:id', (req, res) => {
   // ...
 });
