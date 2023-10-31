@@ -7,7 +7,10 @@ function create(categoria) {
   let sql = 'INSERT INTO categoria_produto (nome) VALUES (?)';
   db.query(sql, params, function (err, result) {
     if (err) throw err;
-    console.log('Categoria de produto criada com sucesso. ID da categoria: ' + result.insertId);
+    console.log(
+      'Categoria de produto criada com sucesso. ID da categoria: ' +
+        result.insertId,
+    );
   });
 }
 
@@ -31,7 +34,10 @@ function update(categoria) {
   var sql = 'UPDATE categoria_produto SET nome = ? WHERE id = ?';
   db.query(sql, [nome, id], function (err, result) {
     if (err) throw err;
-    console.log('Categoria de produto atualizada com sucesso. Registros atualizados: ' + result.affectedRows);
+    console.log(
+      'Categoria de produto atualizada com sucesso. Registros atualizados: ' +
+        result.affectedRows,
+    );
   });
 }
 
@@ -40,7 +46,10 @@ function destroy(id) {
   var sql = 'DELETE FROM categoria_produto WHERE id = ?';
   db.query(sql, [id], function (err, result) {
     if (err) throw err;
-    console.log('Categoria de produto excluída com sucesso. Registros excluídos: ' + result.affectedRows);
+    console.log(
+      'Categoria de produto excluída com sucesso. Registros excluídos: ' +
+        result.affectedRows,
+    );
   });
 }
 
@@ -48,13 +57,16 @@ function destroy(id) {
 async function list_all() {
   let category_list = [];
   return new Promise((resolve, reject) => {
-    db.query('SELECT * FROM categoria_produto', async function (error, collection) {
-      for (const item of collection) {
-        let category = new CategoriaProduto(item.id, item.nome);
-        category_list.push(category);
-      }
-      resolve(category_list);
-    });
+    db.query(
+      'SELECT * FROM categoria_produto',
+      async function (error, collection) {
+        for (const item of collection) {
+          let category = new CategoriaProduto(item.id, item.nome);
+          category_list.push(category);
+        }
+        resolve(category_list);
+      },
+    );
   });
 }
 

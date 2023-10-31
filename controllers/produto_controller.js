@@ -15,7 +15,9 @@ function create(produto) {
     'INSERT INTO produtos (nome, descricao, preco, estoque, imagem, categoria_id) VALUES (?, ?, ?, ?, ?, ?)';
   db.query(sql, params, function (err, result) {
     if (err) throw err;
-    console.log('Produto criado com sucesso. ID do produto: ' + result.insertId);
+    console.log(
+      'Produto criado com sucesso. ID do produto: ' + result.insertId,
+    );
   });
 }
 
@@ -34,7 +36,7 @@ async function retrieve(id) {
         item.estoque,
         item.imagem,
         item.categoria_id,
-        item.categoria
+        item.categoria,
       );
       resolve(produto);
     });
@@ -53,10 +55,17 @@ function update(produto) {
 
   var sql =
     'UPDATE produtos SET nome = ?, descricao = ?, preco = ?, estoque = ?, imagem = ?, categoria_id = ? WHERE id = ?';
-  db.query(sql, [nome, descricao, preco, estoque, imagem, categoria_id, id], function (err, result) {
-    if (err) throw err;
-    console.log('Produto atualizado com sucesso. Registros atualizados: ' + result.affectedRows);
-  });
+  db.query(
+    sql,
+    [nome, descricao, preco, estoque, imagem, categoria_id, id],
+    function (err, result) {
+      if (err) throw err;
+      console.log(
+        'Produto atualizado com sucesso. Registros atualizados: ' +
+          result.affectedRows,
+      );
+    },
+  );
 }
 
 // DELETE (Exclui um produto pelo ID)
@@ -64,7 +73,10 @@ function destroy(id) {
   var sql = 'DELETE FROM produtos WHERE id = ?';
   db.query(sql, [id], function (err, result) {
     if (err) throw err;
-    console.log('Produto excluído com sucesso. Registros excluídos: ' + result.affectedRows);
+    console.log(
+      'Produto excluído com sucesso. Registros excluídos: ' +
+        result.affectedRows,
+    );
   });
 }
 
@@ -72,22 +84,25 @@ function destroy(id) {
 async function list_all() {
   let product_list = [];
   return new Promise((resolve, reject) => {
-    db.query('SELECT produtos.*, categoria_produto.nome AS categoria FROM produtos INNER JOIN categoria_produto ON produtos.categoria_id = categoria_produto.id', async function (error, collection) {
-      for (let item of collection) {
-        let product = new Produto(
-          item.id,
-          item.nome,
-          item.descricao,
-          item.preco,
-          item.estoque,
-          item.imagem,
-          item.categoria_id,
-          item.categoria
-        );
-        product_list.push(product);
-      }
-      resolve(product_list);
-    });
+    db.query(
+      'SELECT produtos.*, categoria_produto.nome AS categoria FROM produtos INNER JOIN categoria_produto ON produtos.categoria_id = categoria_produto.id',
+      async function (error, collection) {
+        for (let item of collection) {
+          let product = new Produto(
+            item.id,
+            item.nome,
+            item.descricao,
+            item.preco,
+            item.estoque,
+            item.imagem,
+            item.categoria_id,
+            item.categoria,
+          );
+          product_list.push(product);
+        }
+        resolve(product_list);
+      },
+    );
   });
 }
 
@@ -108,12 +123,12 @@ async function list_by_category(category_id) {
             item.estoque,
             item.imagem,
             item.categoria_id,
-            item.categoria
+            item.categoria,
           );
           product_list.push(product);
         }
         resolve(product_list);
-      }
+      },
     );
   });
 }

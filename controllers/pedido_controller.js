@@ -3,23 +3,39 @@ const db = require('./db.js');
 
 // CREATE (Cria um novo pedido)
 function create(pedido) {
-  const params = [pedido.getClienteId(), pedido.getData(), pedido.getStatus(), pedido.getValor()];
-  let sql = 'INSERT INTO pedidos (cliente_id, data, status, valor) VALUES (?, ?, ?, ?)';
+  const params = [
+    pedido.getClienteId(),
+    pedido.getData(),
+    pedido.getStatus(),
+    pedido.getValor(),
+  ];
+  let sql =
+    'INSERT INTO pedidos (cliente_id, data, status, valor) VALUES (?, ?, ?, ?)';
   db.query(sql, params, function (err, result) {
     if (err) throw err;
     console.log('Pedido criado com sucesso. ID do pedido: ' + result.insertId);
-    
+
     // Após a criação do pedido, adicione os produtos associados a ele na tabela produtos_pedidos
     const pedidoId = result.insertId;
     const produtos = pedido.getProdutos();
     for (const produto of produtos) {
       const produtoId = produto.id;
       const quantidade = produto.quantidade;
-      let produtosPedidosSql = 'INSERT INTO produtos_pedidos (pedido_id, produto_id, quantidade) VALUES (?, ?, ?)';
-      db.query(produtosPedidosSql, [pedidoId, produtoId, quantidade], function (err, result) {
-        if (err) throw err;
-        console.log('Produto adicionado ao pedido. Pedido ID: ' + pedidoId + ', Produto ID: ' + produtoId);
-      });
+      let produtosPedidosSql =
+        'INSERT INTO produtos_pedidos (pedido_id, produto_id, quantidade) VALUES (?, ?, ?)';
+      db.query(
+        produtosPedidosSql,
+        [pedidoId, produtoId, quantidade],
+        function (err, result) {
+          if (err) throw err;
+          console.log(
+            'Produto adicionado ao pedido. Pedido ID: ' +
+              pedidoId +
+              ', Produto ID: ' +
+              produtoId,
+          );
+        },
+      );
     }
   });
 }
@@ -31,14 +47,21 @@ async function retrieve(id) {
     db.query(sql, async function (err, result) {
       if (err) throw err;
       const item = result[0];
-      const pedido = new Pedido(item.id, item.cliente_id, item.data, item.status, item.valor, []);
-      
+      const pedido = new Pedido(
+        item.id,
+        item.cliente_id,
+        item.data,
+        item.status,
+        item.valor,
+        [],
+      );
+
       // Recupere os produtos associados a este pedido na tabela produtos_pedidos
       let produtosSql = `SELECT produtos.*, produtos_pedidos.quantidade
         FROM produtos_pedidos
         INNER JOIN produtos ON produtos_pedidos.produto_id = produtos.id
         WHERE produtos_pedidos.pedido_id = ${id}`;
-      
+
       db.query(produtosSql, async function (err, produtosResult) {
         if (err) throw err;
         const produtos = [];
@@ -51,7 +74,7 @@ async function retrieve(id) {
             estoque: produtoItem.estoque,
             imagem: produtoItem.imagem,
             categoria_id: produtoItem.categoria_id,
-            quantidade: produtoItem.quantidade
+            quantidade: produtoItem.quantidade,
           };
           produtos.push(produto);
         }
@@ -69,10 +92,14 @@ function update(pedido) {
   let data = pedido.getData();
   let status = pedido.getStatus();
   let valor = pedido.getValor();
-  var sql = 'UPDATE pedidos SET cliente_id = ?, data = ?, status = ?, valor = ? WHERE id = ?';
+  var sql =
+    'UPDATE pedidos SET cliente_id = ?, data = ?, status = ?, valor = ? WHERE id = ?';
   db.query(sql, [cliente_id, data, status, valor, id], function (err, result) {
     if (err) throw err;
-    console.log('Pedido atualizado com sucesso. Registros atualizados: ' + result.affectedRows);
+    console.log(
+      'Pedido atualizado com sucesso. Registros atualizados: ' +
+        result.affectedRows,
+    );
   });
 }
 
@@ -81,13 +108,19 @@ function destroy(id) {
   var sql = 'DELETE FROM pedidos WHERE id = ?';
   db.query(sql, [id], function (err, result) {
     if (err) throw err;
-    console.log('Pedido excluído com sucesso. Registros excluídos: ' + result.affectedRows);
-    
+    console.log(
+      'Pedido excluído com sucesso. Registros excluídos: ' +
+        result.affectedRows,
+    );
+
     // Também exclua os produtos associados a este pedido na tabela produtos_pedidos
     var produtosPedidosSql = 'DELETE FROM produtos_pedidos WHERE pedido_id = ?';
     db.query(produtosPedidosSql, [id], function (err, result) {
       if (err) throw err;
-      console.log('Produtos associados ao pedido também foram excluídos. Registros excluídos: ' + result.affectedRows);
+      console.log(
+        'Produtos associados ao pedido também foram excluídos. Registros excluídos: ' +
+          result.affectedRows,
+      );
     });
   });
 }
@@ -98,14 +131,21 @@ async function list_all() {
   return new Promise((resolve, reject) => {
     db.query('SELECT * FROM pedidos', async function (error, collection) {
       for (const item of collection) {
-        let pedido = new Pedido(item.id, item.cliente_id, item.data, item.status, item.valor, []);
-        
+        let pedido = new Pedido(
+          item.id,
+          item.cliente_id,
+          item.data,
+          item.status,
+          item.valor,
+          [],
+        );
+
         // Recupere os produtos associados a este pedido na tabela produtos_pedidos
         let produtosSql = `SELECT produtos.*, produtos_pedidos.quantidade
           FROM produtos_pedidos
           INNER JOIN produtos ON produtos_pedidos.produto_id = produtos.id
           WHERE produtos_pedidos.pedido_id = ${item.id}`;
-        
+
         db.query(produtosSql, async function (err, produtosResult) {
           if (err) throw err;
           const produtos = [];
@@ -118,7 +158,7 @@ async function list_all() {
               estoque: produtoItem.estoque,
               imagem: produtoItem.imagem,
               categoria_id: produtoItem.categoria_id,
-              quantidade: produtoItem.quantidade
+              quantidade: produtoItem.quantidade,
             };
             produtos.push(produto);
           }
@@ -132,9 +172,9 @@ async function list_all() {
 }
 
 module.exports = {
-    create: create,
-    retrieve: retrieve,
-    update: update,
-    destroy: destroy,
-    list_all: list_all
+  create: create,
+  retrieve: retrieve,
+  update: update,
+  destroy: destroy,
+  list_all: list_all,
 };
