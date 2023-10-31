@@ -10,11 +10,15 @@ const categoriaController = require('./controllers/categoria_controller');
 
 
 const { port } = require('./config/constants');
+const { config } = require('./config/database');
+const { products, customers } = require('./config/mock');
 
 const app = express();
 app.use(bodyParser.json());
 
-// set the view engine to ejs
+// globals
+global.isAdmin = false;
+
 app.set('view engine', 'ejs');
 app.use('/assets', express.static('assets'));
 
@@ -32,7 +36,7 @@ app.get('/category/:id', async function(req, res) {
   let products = new Array();
   products = await produtoController.list_by_category(categoryId)
   res.render('pages/home', {
-    products: products,
+    products,
   });
 });
 
@@ -41,7 +45,8 @@ app.get('/admin', async function(req, res){
   let products = new Array();
   products = await produtoController.list_all();
   res.render('pages/admin', {
-    products: products,
+    isAdmin: true,
+    products,
   });
 });
 
@@ -50,6 +55,15 @@ app.get('/services', (req, res) => {
   res.render('pages/services');
 });
 
+app.get('/customers', (req, res) => {
+  res.render('pages/customers', {
+    isAdmin: true,
+    customers,
+  });
+});
+
+app.post('/products', (req, res) => {
+  // ...
 // create product
 app.post('/admin/products', (req, res) => {
   const { nome, descricao, preco, estoque, imagem, categoria_id } = req.body;

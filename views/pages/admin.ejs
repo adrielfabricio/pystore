@@ -4,6 +4,15 @@
 
   <body>
     <div class="admin-container">
+      <div class="justify-content-between mb-30">
+        <button
+          data-toggle="modal"
+          data-target="#createProductModal"
+          type="submit"
+          class="btn btn-primary">
+          Criar novo produto
+        </button>
+      </div>
       <% for (const product of products) { %>
       <div
         class="job-box d-md-flex align-items-center justify-content-between mb-30">
@@ -38,16 +47,22 @@
             data-target="#adminProductModal<%= product.id %>">
             <img src="assets/images/edit.svg" alt="Image" class="imf-fluid" />
           </button>
-          <button id="deleteProduct" onclick="deleteProduct('<%= product.id %>')" type="button" class="button-icon">
+          <button
+            id="deleteProduct"
+            onclick="deleteProduct(<%= product.id %>)"
+            type="button"
+            class="button-icon">
             <img src="assets/images/delete.svg" alt="Image" class="imf-fluid" />
           </button>
         </div>
       </div>
 
-      <%- include('../partials/adminProduct.modal.ejs', { product: product }) %>
+      <%- include('../partials/modals/editProduct.ejs', { product: product }) %>
       <% } %>
     </div>
+    <%- include('../partials/modals/createProduct.ejs') %>
   </body>
 
   <%- include('../partials/scripts.ejs') %>
+  <script type="text/javascript" src="assets/js/adminScripts.js"></script>
 </html>
