@@ -12,10 +12,13 @@ const clienteController = require('./controllers/user_controller');
 const { port } = require('./config/constants');
 
 const app = express();
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // globals
 global.isAdmin = false;
+global.cart = [];
+global.totalPrice = 0.0;
 
 app.set('view engine', 'ejs');
 app.use('/assets', express.static('assets'));
@@ -26,6 +29,8 @@ app.get('/', async function (req, res) {
   products = await produtoController.list_all();
   res.render('pages/home', {
     products: products,
+    cart: cart,
+    totalPrice: totalPrice,
   });
 });
 
@@ -152,6 +157,31 @@ app.delete('/admin/categories/:id', (req, res) => {
       res.status(500).json({ message: 'Erro ao excluir a categoria' });
     }
   });
+});
+
+app.get('/add-to-cart/:item', async (req, res) => {
+  const id = parseInt(req.params.item);
+  const existingItem = cart.find(item => item.id === id);
+
+  if (existingItem) {
+    existingItem.quantity++;
+    totalPrice += existingItem.price;
+  } else {
+    const produto = await produtoController.retrieve(id);
+    if (produto) {
+      totalPrice += produto.price;
+      cart.push({
+        ...produto,
+        quantity: 1,
+      });
+    }
+  }
+  res.redirect('/')
+});
+
+app.get('/clear-cart', (req, res) => {
+  cart = [];
+  res.redirect('/');
 });
 
 app.listen(port, () => {
