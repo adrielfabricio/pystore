@@ -1,16 +1,15 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
-// Importe os modelos e controladores
+// models
 const Produto = require('./model/Produto');
 const CategoriaProduto = require('./model/CategoriaProduto');
-
+// controllers
 const produtoController = require('./controllers/produto_controller');
 const categoriaController = require('./controllers/categoria_controller');
 const clienteController = require('./controllers/user_controller');
-
+// constants
 const { port } = require('./config/constants');
-const { config } = require('./config/database');
 
 const app = express();
 app.use(bodyParser.json());

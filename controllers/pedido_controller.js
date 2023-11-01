@@ -1,5 +1,5 @@
 const Pedido = require('../model/Pedido.js');
-const db = require('./db.js');
+const database = require('../config/database.js');
 
 // CREATE (Cria um novo pedido)
 function create(pedido) {
@@ -11,7 +11,7 @@ function create(pedido) {
   ];
   let sql =
     'INSERT INTO pedidos (cliente_id, data, status, valor) VALUES (?, ?, ?, ?)';
-  db.query(sql, params, function (err, result) {
+  database.query(sql, params, function (err, result) {
     if (err) throw err;
     console.log('Pedido criado com sucesso. ID do pedido: ' + result.insertId);
 
@@ -23,7 +23,7 @@ function create(pedido) {
       const quantidade = produto.quantidade;
       let produtosPedidosSql =
         'INSERT INTO produtos_pedidos (pedido_id, produto_id, quantidade) VALUES (?, ?, ?)';
-      db.query(
+      database.query(
         produtosPedidosSql,
         [pedidoId, produtoId, quantidade],
         function (err, result) {
@@ -44,7 +44,7 @@ function create(pedido) {
 async function retrieve(id) {
   var sql = `SELECT * FROM pedidos WHERE id = ${id}`;
   return new Promise((resolve, reject) => {
-    db.query(sql, async function (err, result) {
+    database.query(sql, async function (err, result) {
       if (err) throw err;
       const item = result[0];
       const pedido = new Pedido(
@@ -62,7 +62,7 @@ async function retrieve(id) {
         INNER JOIN produtos ON produtos_pedidos.produto_id = produtos.id
         WHERE produtos_pedidos.pedido_id = ${id}`;
 
-      db.query(produtosSql, async function (err, produtosResult) {
+      database.query(produtosSql, async function (err, produtosResult) {
         if (err) throw err;
         const produtos = [];
         for (const produtoItem of produtosResult) {
@@ -94,7 +94,7 @@ function update(pedido) {
   let valor = pedido.getValor();
   var sql =
     'UPDATE pedidos SET cliente_id = ?, data = ?, status = ?, valor = ? WHERE id = ?';
-  db.query(sql, [cliente_id, data, status, valor, id], function (err, result) {
+  database.query(sql, [cliente_id, data, status, valor, id], function (err, result) {
     if (err) throw err;
     console.log(
       'Pedido atualizado com sucesso. Registros atualizados: ' +
@@ -106,7 +106,7 @@ function update(pedido) {
 // DELETE (Exclui um pedido pelo ID)
 function destroy(id) {
   var sql = 'DELETE FROM pedidos WHERE id = ?';
-  db.query(sql, [id], function (err, result) {
+  database.query(sql, [id], function (err, result) {
     if (err) throw err;
     console.log(
       'Pedido excluído com sucesso. Registros excluídos: ' +
@@ -115,7 +115,7 @@ function destroy(id) {
 
     // Também exclua os produtos associados a este pedido na tabela produtos_pedidos
     var produtosPedidosSql = 'DELETE FROM produtos_pedidos WHERE pedido_id = ?';
-    db.query(produtosPedidosSql, [id], function (err, result) {
+    database.query(produtosPedidosSql, [id], function (err, result) {
       if (err) throw err;
       console.log(
         'Produtos associados ao pedido também foram excluídos. Registros excluídos: ' +
@@ -129,7 +129,7 @@ function destroy(id) {
 async function list_all() {
   let pedido_list = [];
   return new Promise((resolve, reject) => {
-    db.query('SELECT * FROM pedidos', async function (error, collection) {
+    database.query('SELECT * FROM pedidos', async function (error, collection) {
       for (const item of collection) {
         let pedido = new Pedido(
           item.id,
@@ -146,7 +146,7 @@ async function list_all() {
           INNER JOIN produtos ON produtos_pedidos.produto_id = produtos.id
           WHERE produtos_pedidos.pedido_id = ${item.id}`;
 
-        db.query(produtosSql, async function (err, produtosResult) {
+        database.query(produtosSql, async function (err, produtosResult) {
           if (err) throw err;
           const produtos = [];
           for (const produtoItem of produtosResult) {

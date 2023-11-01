@@ -4,13 +4,13 @@ const Pedidos = require('../model/Pedido.js');
 const Produto = require('../model/Produto.js');
 const TipoUsuario = require('../model/TipoUsuario.js');
 const Usuario = require('../model/Usuario.js');
-const db = require('./db.js');
+const database = require('../config/database.js');
 
 // List
 async function list_all() {
   let user_list = [];
   return new Promise((resolve, reject) => {
-    db.query(
+    database.query(
       'SELECT usuarios.*, tipo_usuario.nome AS tipo FROM usuarios INNER JOIN tipo_usuario ON usuarios.tipo_usuario_id = tipo_usuario.id;',
       async function (error, collection) {
         for (const item of collection) {
@@ -44,7 +44,7 @@ function create(user) {
   ];
   let sql =
     'INSERT INTO usuarios (nome, email, senha, endereco, cep, tipo_usuario_id) VALUES (?, ?, ?, ?, ?, ?)';
-  db.query(sql, params, function (err, result) {
+  database.query(sql, params, function (err, result) {
     if (err) throw err;
     console.log('1 record inserted');
   });
@@ -54,7 +54,7 @@ function create(user) {
 async function retrieve(id) {
   var sql = `SELECT usuarios.*, tipo_usuario.nome AS tipo FROM usuarios INNER JOIN tipo_usuario ON usuarios.tipo_usuario_id = tipo_usuario.id WHERE usuarios.id = ${id}`;
   return new Promise((resolve, reject) => {
-    db.query(sql, async function (err, result) {
+    database.query(sql, async function (err, result) {
       if (err) throw err;
       const item = result[0];
       const user = new Usuario(
@@ -84,7 +84,7 @@ function update(user) {
 
   var sql =
     'UPDATE usuarios SET nome = ?, email = ?, senha = ?, endereco = ?, cep = ?, tipo_usuario_id = ? WHERE id = ?';
-  db.query(
+  database.query(
     sql,
     [nome, email, senha, endereco, cep, tipo_usuario_id, id],
     async function (err, result) {
@@ -97,7 +97,7 @@ function update(user) {
 // Delete
 function destroy(id) {
   var sql = 'DELETE FROM usuarios WHERE id = ?';
-  db.query(sql, [id], function (err, result) {
+  database.query(sql, [id], function (err, result) {
     if (err) throw err;
     console.log('Number of records deleted: ' + result.affectedRows);
   });

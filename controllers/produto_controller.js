@@ -1,5 +1,5 @@
 const Produto = require('../model/Produto.js');
-const db = require('./db.js');
+const database = require('../config/database.js');
 
 // CREATE (Cria um novo produto)
 function create(produto) {
@@ -13,7 +13,7 @@ function create(produto) {
   ];
   let sql =
     'INSERT INTO produtos (nome, descricao, preco, estoque, imagem, categoria_id) VALUES (?, ?, ?, ?, ?, ?)';
-  db.query(sql, params, function (err, result) {
+  database.query(sql, params, function (err, result) {
     if (err) throw err;
     console.log(
       'Produto criado com sucesso. ID do produto: ' + result.insertId,
@@ -25,7 +25,7 @@ function create(produto) {
 async function retrieve(id) {
   var sql = `SELECT produtos.*, categoria_produto.nome AS categoria FROM produtos INNER JOIN categoria_produto ON produtos.categoria_id = categoria_produto.id WHERE produtos.id = ${id}`;
   return new Promise((resolve, reject) => {
-    db.query(sql, async function (err, result) {
+    database.query(sql, async function (err, result) {
       if (err) throw err;
       const item = result[0];
       const produto = new Produto(
@@ -55,7 +55,7 @@ function update(produto) {
 
   var sql =
     'UPDATE produtos SET nome = ?, descricao = ?, preco = ?, estoque = ?, imagem = ?, categoria_id = ? WHERE id = ?';
-  db.query(
+  database.query(
     sql,
     [nome, descricao, preco, estoque, imagem, categoria_id, id],
     function (err, result) {
@@ -71,7 +71,7 @@ function update(produto) {
 // DELETE (Exclui um produto pelo ID)
 function destroy(id) {
   var sql = 'DELETE FROM produtos WHERE id = ?';
-  db.query(sql, [id], function (err, result) {
+  database.query(sql, [id], function (err, result) {
     if (err) throw err;
     console.log(
       'Produto excluído com sucesso. Registros excluídos: ' +
@@ -84,7 +84,7 @@ function destroy(id) {
 async function list_all() {
   let product_list = [];
   return new Promise((resolve, reject) => {
-    db.query(
+    database.query(
       'SELECT produtos.*, categoria_produto.nome AS categoria FROM produtos INNER JOIN categoria_produto ON produtos.categoria_id = categoria_produto.id',
       async function (error, collection) {
         for (let item of collection) {
@@ -110,7 +110,7 @@ async function list_all() {
 async function list_by_category(category_id) {
   let product_list = [];
   return new Promise((resolve, reject) => {
-    db.query(
+    database.query(
       'SELECT produtos.*, categoria_produto.nome AS categoria FROM produtos INNER JOIN categoria_produto ON produtos.categoria_id = categoria_produto.id WHERE produtos.categoria_id = ?',
       [category_id],
       async function (error, collection) {
