@@ -101,7 +101,7 @@ app.delete('/customers/:id', (req, res) => {
 
 // create product
 app.post('/products', upload.single('image'), (req, res) => {
-  const { name, description, price, stock, categoria_id } = req.body;
+  const { name, description, price, stock, category } = req.body;
   const image = req.image;
 
   // TODO: ajustar codigo de criacao de produtos para os novos nomes
@@ -149,7 +149,7 @@ app.delete('/products/:id', (req, res) => {
 // update product
 app.put('/products/:id', (req, res) => {
   const id = parseInt(req.params.id);
-  const { name, description, price, stock, image, category_id } =
+  const { name, description, price, stock, image, category } =
     req.body;
 
   // TODO: atualizar logica para atualizacao de produto
