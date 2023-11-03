@@ -1,5 +1,7 @@
 const express = require('express');
+const multer = require('multer');
 const bodyParser = require('body-parser');
+const methodOverride = require('method-override');
 
 // models
 const Produto = require('./model/Produto');
@@ -14,6 +16,17 @@ const { port } = require('./config/constants');
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(methodOverride('_method'));
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+      cb(null, 'uploads/'); // A pasta onde os arquivos serão armazenados
+  },
+  filename: function (req, file, cb) {
+      cb(null, file.originalname); // Use o nome original do arquivo
+  }
+});
+const upload = multer({ storage: storage });
 
 // globals
 global.isAdmin = false;
@@ -22,11 +35,12 @@ global.totalPrice = 0.0;
 
 app.set('view engine', 'ejs');
 app.use('/assets', express.static('assets'));
+app.use('/uploads', express.static('uploads'));
 
 // home page (list all products)
 app.get('/', async function (req, res) {
-  let products = new Array();
-  products = await produtoController.list_all();
+  const products = await produtoController.list_all();
+
   res.render('pages/home', {
     products: products,
     cart: cart,
@@ -34,22 +48,14 @@ app.get('/', async function (req, res) {
   });
 });
 
-app.get('/category/:id', async function (req, res) {
-  const categoryId = req.params.id;
-  let products = new Array();
-  products = await produtoController.list_by_category(categoryId);
-  res.render('pages/home', {
-    products,
-  });
-});
-
 // Admin page (list all products and categories)
 app.get('/admin', async function (req, res) {
-  let products = new Array();
-  products = await produtoController.list_all();
+  const products = await produtoController.list_all();
+  const categories = await categoriaController.list_all();
   res.render('pages/admin', {
     isAdmin: true,
     products,
+    categories,
   });
 });
 
@@ -66,99 +72,108 @@ app.get('/customers', async (req, res) => {
   });
 });
 
-// create product
-app.post('/admin/products', (req, res) => {
-  const { nome, descricao, preco, estoque, imagem, categoria_id } = req.body;
-  const produto = new Produto(
-    0,
-    nome,
-    descricao,
-    preco,
-    estoque,
-    imagem,
-    categoria_id,
-  );
+app.post('/customers', (req, res) => {
+  const { name, email, address, cep } = req.body;
 
-  produtoController.create(produto, result => {
-    if (result) {
-      res.status(201).json({ message: 'Produto criado com sucesso' });
-    } else {
-      res.status(500).json({ message: 'Erro ao criar o produto' });
-    }
-  });
+  // TODO: implementar create na base de dados para o cliente
+  // ...
+
+  res.redirect('/customers');
 });
 
-// product details
-app.get('/products/:id', async function (req, res) {
-  produto = await produtoController.retrieve(req.params.id);
-  res.render('pages/products/:id', {
-    product: produto,
-  });
+app.put('/customers/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  const { name, email, address, cep } = req.body;
+
+  // TODO: implementar logica para atualizar user na base dados
+  // ...
+
+  res.redirect('/customers');
+});
+
+app.delete('/customers/:id', (req, res) => {
+  const customerId = parseInt(req.params.id);
+
+  // TODO: implementar lógica de delecao de usuario da base de dados
+  
+  res.redirect('/customers');
+});
+
+// create product
+app.post('/products', upload.single('image'), (req, res) => {
+  const { name, description, price, stock, categoria_id } = req.body;
+  const image = req.image;
+
+  // TODO: ajustar codigo de criacao de produtos para os novos nomes
+  // ...
+
+  // const produto = new Produto(
+  //   0,
+  //   nome,
+  //   descricao,
+  //   preco,
+  //   estoque,
+  //   imagem,
+  //   categoria_id,
+  // );
+
+  // produtoController.create(produto, result => {
+  //   if (result) {
+  //     res.status(201).json({ message: 'Produto criado com sucesso' });
+  //   } else {
+  //     res.status(500).json({ message: 'Erro ao criar o produto' });
+  //   }
+  // });
+
+  // redirect
+  res.redirect('/admin');
 });
 
 // destroy product
-app.delete('/admin/products/:id', (req, res) => {
-  const productId = req.body.id;
-  produtoController.destroy(productId, result => {
-    // Lógica para lidar com o resultado da exclusão do produto
-    if (result) {
-      res.status(200).json({ message: 'Produto excluído com sucesso' });
-    } else {
-      res.status(500).json({ message: 'Erro ao excluir o produto' });
-    }
-  });
+app.delete('/products/:id', (req, res) => {
+  const productId = parseInt(req.params.id);
+  
+  // TODO: revisar logica de exclusao no banco de dados
+  // produtoController.destroy(productId, result => {
+  //   // Lógica para lidar com o resultado da exclusão do produto
+  //   if (result) {
+  //     res.status(200).json({ message: 'Produto excluído com sucesso' });
+  //   } else {
+  //     res.status(500).json({ message: 'Erro ao excluir o produto' });
+  //   }
+  // });
+
+  res.redirect('/admin');
 });
 
 // update product
-app.put('/admin/products/:id', (req, res) => {
-  const { id, nome, descricao, preco, estoque, imagem, categoria_id } =
+app.put('/products/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  const { name, description, price, stock, image, category_id } =
     req.body;
-  const produto = new Produto(
-    id,
-    nome,
-    descricao,
-    preco,
-    estoque,
-    imagem,
-    categoria_id,
-  );
 
-  produtoController.update(produto, result => {
-    if (result) {
-      res.status(200).json({ message: 'Produto atualizado com sucesso' });
-    } else {
-      res.status(500).json({ message: 'Erro ao atualizar o produto' });
-    }
-  });
+  // TODO: atualizar logica para atualizacao de produto
+  // const produto = new Produto(
+  //   id,
+  //   nome,
+  //   descricao,
+  //   preco,
+  //   estoque,
+  //   imagem,
+  //   categoria_id,
+  // );
+
+  // produtoController.update(produto, result => {
+  //   if (result) {
+  //     res.status(200).json({ message: 'Produto atualizado com sucesso' });
+  //   } else {
+  //     res.status(500).json({ message: 'Erro ao atualizar o produto' });
+  //   }
+  // });
+  res.redirect('/admin');
 });
 
-app.post('/admin/categories', (req, res) => {
-  const { nome } = req.body;
-  const categoria = new CategoriaProduto(0, nome);
-
-  categoriaController.create(categoria, result => {
-    if (result) {
-      res.status(201).json({ message: 'Categoria criada com sucesso' });
-    } else {
-      res.status(500).json({ message: 'Erro ao criar a categoria' });
-    }
-  });
-});
-
-// destroy category
-app.delete('/admin/categories/:id', (req, res) => {
-  const categoryId = req.body.id;
-
-  categoriaController.destroy(categoryId, result => {
-    // Lógica para lidar com o resultado da exclusão da categoria
-    if (result) {
-      res.status(200).json({ message: 'Categoria excluída com sucesso' });
-    } else {
-      res.status(500).json({ message: 'Erro ao excluir a categoria' });
-    }
-  });
-});
-
+// aux routes
 app.get('/add-to-cart/:item', async (req, res) => {
   const id = parseInt(req.params.item);
   const existingItem = cart.find(item => item.id === id);
@@ -180,6 +195,15 @@ app.get('/add-to-cart/:item', async (req, res) => {
 });
 
 app.get('/clear-cart', (req, res) => {
+  cart = [];
+  res.redirect('/');
+});
+
+// buy route
+app.post('/buy', (req, res) => {
+  // TODO: variavel cart pode ser manipulada aqui para enviar os dados para o banco
+
+  // reset data and redirect to home
   cart = [];
   res.redirect('/');
 });

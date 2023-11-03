@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
-  <%- include('../partials/head.ejs') %> <%- include('../partials/nav.ejs') %>
+  <%- include('../partials/head.ejs') %>
+  <%- include('../partials/nav.ejs') %>
 
   <body>
     <div class="admin-container">
@@ -20,7 +21,7 @@
           <div
             class="img-holder mr-md-4 mb-md-0 mb-4 mx-auto mx-md-0 d-md-none d-lg-flex">
             <img
-              src="<%= product.image %>"
+              src="/uploads/<%= product.image %>"
               class="img-fluid product-thumbnail" />
           </div>
           <div class="job-content">
@@ -54,6 +55,12 @@
             class="button-icon">
             <img src="assets/images/delete.svg" alt="Image" class="imf-fluid" />
           </button>
+
+          <form
+            id="form-delete-product-<%= product.id %>"
+            method="POST"
+            action="/products/<%= product.id %>?_method=DELETE"
+            style="display: none"></form>
         </div>
       </div>
 

@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
-  <%- include('../partials/head.ejs') %> <%- include('../partials/nav.ejs') %>
+  <%- include('../partials/head.ejs') %>
+  <%- include('../partials/nav.ejs') %>
 
   <body>
     <div class="admin-container">
@@ -39,9 +40,19 @@
             data-target="#editCustomerModal<%= customer.id %>">
             <img src="assets/images/edit.svg" alt="Image" class="imf-fluid" />
           </button>
-          <button id="deleteCustomer" type="button" class="button-icon">
+          <button
+            id="deleteCustomer-<%= customer.id %>"
+            type="button"
+            class="button-icon"
+            onclick="deleteCustomer(<%= customer.id %>)">
             <img src="assets/images/delete.svg" alt="Image" class="imf-fluid" />
           </button>
+
+          <form
+            id="form-delete-customer-<%= customer.id %>"
+            method="POST"
+            action="/customers/<%= customer.id %>?_method=DELETE"
+            style="display: none"></form>
         </div>
       </div>
 

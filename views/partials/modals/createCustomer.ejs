@@ -21,13 +21,14 @@
       </div>
 
       <div class="modal-body">
-        <form id="createCustomerForm">
+        <form method="POST" id="createCustomerForm" action="/customers">
 					<div class="form-group">
             <label for="customerName">Nome do cliente</label>
             <input
 							type="text"
               class="form-control"
               id="customerName"
+              name="name"
               placeholder="Nome do cliente"
               value=""
             />
@@ -40,6 +41,7 @@
               class="form-control"
               id="customerEmail"
               placeholder="E-mail"
+              name="email"
               value=""
             />
           </div>
@@ -51,6 +53,7 @@
               class="form-control"
               id="customerAddress"
               placeholder="Endereço"
+              name="address"
               value="" />
           </div>
 
@@ -61,6 +64,7 @@
               class="form-control"
               id="customeCep"
               placeholder="CEP"
+              name="cep"
               value="" />
           </div>
 
