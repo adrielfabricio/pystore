@@ -1,9 +1,9 @@
-class Parceiro {
-    constructor(id, nome, website, contato){
+class Partner {
+    constructor(id, name, website, contact){
         this.id = id;
-        this.nome = nome;
+        this.name = name;
         this.website = website;
-        this.contato = contato;
+        this.contact = contact;
     }
 
     getId(){
@@ -12,11 +12,11 @@ class Parceiro {
     setId(value){
         this.id = value
     }
-    getNome(){
-        return this.nome;
+    getName(){
+        return this.name;
     }
-    setNome(value){
-        this.nome = value
+    setName(value){
+        this.name = value
     }
     getWebsite(){
         return this.website;
@@ -24,12 +24,12 @@ class Parceiro {
     setWebsite(value){
         this.website = value
     }
-    getContato(){
-        return this.contato;
+    getContact(){
+        return this.contact;
     }
-    setContato(value){
-        this.contato = value
+    setContact(value){
+        this.contact = value
     }
 }
 
-module.exports = Parceiro;
+module.exports = Partner;

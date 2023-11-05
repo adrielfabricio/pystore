@@ -1,85 +1,72 @@
-const Parceiro = require('../model/Parceiro.js');
+const CategoriaProduto = require('../model/CategoriaProduto.js');
 const database = require('../config/database.js');
 
-// CREATE (Cria um novo parceiro)
-function create(parceiro) {
-  const params = [
-    parceiro.getNome(),
-    parceiro.getWebsite(),
-    parceiro.getContato(),
-  ];
-  let sql = 'INSERT INTO parceiros (nome, website, contato) VALUES (?, ?, ?)';
+// CREATE (Cria uma nova categoria de produto)
+function create(categoria) {
+  const params = [categoria.getNome()];
+  let sql = 'INSERT INTO categoria_produto (nome) VALUES (?)';
   database.query(sql, params, function (err, result) {
     if (err) throw err;
     console.log(
-      'Parceiro criado com sucesso. ID do parceiro: ' + result.insertId,
+      'Categoria de produto criada com sucesso. ID da categoria: ' +
+        result.insertId,
     );
   });
 }
 
-// READ (Recupera um parceiro pelo ID)
+// READ (Recupera uma categoria de produto pelo ID)
 async function retrieve(id) {
-  var sql = `SELECT * FROM parceiros WHERE id = ${id}`;
+  var sql = `SELECT * FROM categoria_produto WHERE id = ${id}`;
   return new Promise((resolve, reject) => {
     database.query(sql, async function (err, result) {
       if (err) throw err;
       const item = result[0];
-      const parceiro = new Parceiro(
-        item.id,
-        item.nome,
-        item.website,
-        item.contato,
-      );
-      resolve(parceiro);
+      const categoria = new CategoriaProduto(item.id, item.nome);
+      resolve(categoria);
     });
   });
 }
 
-// UPDATE (Atualiza um parceiro pelo ID)
-function update(parceiro) {
-  let id = parceiro.getId();
-  let nome = parceiro.getNome();
-  let website = parceiro.getWebsite();
-  let contato = parceiro.getContato();
-  var sql =
-    'UPDATE parceiros SET nome = ?, website = ?, contato = ? WHERE id = ?';
-  database.query(sql, [nome, website, contato, id], function (err, result) {
+// UPDATE (Atualiza uma categoria de produto pelo ID)
+function update(categoria) {
+  let id = categoria.getId();
+  let nome = categoria.getNome();
+  var sql = 'UPDATE categoria_produto SET nome = ? WHERE id = ?';
+  database.query(sql, [nome, id], function (err, result) {
     if (err) throw err;
     console.log(
-      'Parceiro atualizado com sucesso. Registros atualizados: ' +
+      'Categoria de produto atualizada com sucesso. Registros atualizados: ' +
         result.affectedRows,
     );
   });
 }
 
-// DELETE (Exclui um parceiro pelo ID)
+// DELETE (Exclui uma categoria de produto pelo ID)
 function destroy(id) {
-  var sql = 'DELETE FROM parceiros WHERE id = ?';
+  var sql = 'DELETE FROM categoria_produto WHERE id = ?';
   database.query(sql, [id], function (err, result) {
     if (err) throw err;
     console.log(
-      'Parceiro excluído com sucesso. Registros excluídos: ' +
+      'Categoria de produto excluída com sucesso. Registros excluídos: ' +
         result.affectedRows,
     );
   });
 }
 
-// LIST ALL (Recupera todos os parceiros)
+// LIST ALL (Recupera todas as categorias de produtos)
 async function list_all() {
-  let parceiro_list = [];
+  let category_list = [];
   return new Promise((resolve, reject) => {
-    database.query('SELECT * FROM parceiros', async function (error, collection) {
-      for (const item of collection) {
-        let parceiro = new Parceiro(
-          item.id,
-          item.nome,
-          item.website,
-          item.contato,
-        );
-        parceiro_list.push(parceiro);
-      }
-      resolve(parceiro_list);
-    });
+    database.query(
+      'SELECT * FROM categoria_produto',
+      async function (error, collection) {
+        for (const item of collection) {
+          let category = new CategoriaProduto(item.id, item.nome);
+          category_list.push(category);
+        }
+        resolve(category_list);
+      },
+    );
   });
 }
 

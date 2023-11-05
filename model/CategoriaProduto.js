@@ -1,7 +1,7 @@
-class CategoriaProduto {
-    constructor(id, nome){
+class ProductCategory {
+    constructor(id, name){
         this.id = id;
-        this.nome = nome;
+        this.name = name;
     }
 
     getId(){
@@ -10,12 +10,12 @@ class CategoriaProduto {
     setId(value){
         this.id = value
     }
-    getNome(){
-        return this.nome;
+    getName(){
+        return this.name;
     }
-    setNome(value){
-        this.nome = value
+    setName(value){
+        this.name = value
     }
 }
 
-module.exports = CategoriaProduto;
+module.exports = ProductCategory;

@@ -1,47 +1,47 @@
-use db_pystore; 
+USE db_pystore;
 
--- Inserir tipos de usuário
-INSERT INTO tipo_usuario (nome) VALUES
+-- Insert user types
+INSERT INTO user_type (name) VALUES
   ('admin'),
-  ('cliente');
+  ('client');
 
--- Inserir um usuário administrador
-INSERT INTO usuarios (nome, email, senha, endereco, cep, tipo_usuario_id)
-VALUES ('Admin', 'admin@example.com', 'senhaadmin', 'Rua Admin, 123', '12345-678', 1);
+-- Insert an administrator user
+INSERT INTO users (name, email, password, address, zip_code, user_type_id)
+VALUES ('Admin', 'admin@example.com', 'adminpassword', 'Admin Street, 123', '12345-678', 1);
 
--- Inserir três clientes
-INSERT INTO usuarios (nome, email, senha, endereco, cep, tipo_usuario_id)
+-- Insert three clients
+INSERT INTO users (name, email, password, address, zip_code, user_type_id)
 VALUES
-  ('Cliente 1', 'cliente1@example.com', 'senhacliente1', 'Rua Cliente 1, 456', '98765-432', 2),
-  ('Cliente 2', 'cliente2@example.com', 'senhacliente2', 'Rua Cliente 2, 789', '54321-876', 2),
-  ('Cliente 3', 'cliente3@example.com', 'senhacliente3', 'Rua Cliente 3, 101', '11111-111', 2);
+  ('Client 1', 'client1@example.com', 'clientpassword1', 'Client 1 Street, 456', '98765-432', 2),
+  ('Client 2', 'client2@example.com', 'clientpassword2', 'Client 2 Street, 789', '54321-876', 2),
+  ('Client 3', 'client3@example.com', 'clientpassword3', 'Client 3 Street, 101', '11111-111', 2);
 
--- Inserir seis parceiros
-INSERT INTO parceiros (nome, website, email, telefone)
+-- Insert six partners
+INSERT INTO partners (name, website, email, phone)
 VALUES
-  ('Parceiro 1', 'http://www.parceiro1.com', 'parceiro1@example.com', '123-456-7890'),
-  ('Parceiro 2', 'http://www.parceiro2.com', 'parceiro2@example.com', '987-654-3210'),
-  ('Parceiro 3', 'http://www.parceiro3.com', 'parceiro3@example.com', '555-555-5555'),
-  ('Parceiro 4', 'http://www.parceiro4.com', 'parceiro4@example.com', '111-222-3333'),
-  ('Parceiro 5', 'http://www.parceiro5.com', 'parceiro5@example.com', '777-888-9999'),
-  ('Parceiro 6', 'http://www.parceiro6.com', 'parceiro6@example.com', '444-999-2222');
+  ('Partner 1', 'http://www.partner1.com', 'partner1@example.com', '123-456-7890'),
+  ('Partner 2', 'http://www.partner2.com', 'partner2@example.com', '987-654-3210'),
+  ('Partner 3', 'http://www.partner3.com', 'partner3@example.com', '555-555-5555'),
+  ('Partner 4', 'http://www.partner4.com', 'partner4@example.com', '111-222-3333'),
+  ('Partner 5', 'http://www.partner5.com', 'partner5@example.com', '777-888-9999'),
+  ('Partner 6', 'http://www.partner6.com', 'partner6@example.com', '444-999-2222');
 
--- Inserir categorias de produtos
-INSERT INTO categoria_produto (nome) VALUES
-  ('Categoria 1'),
-  ('Categoria 2'),
-  ('Categoria 3');
+-- Insert product categories
+INSERT INTO product_category (name) VALUES
+  ('Category 1'),
+  ('Category 2'),
+  ('Category 3');
 
--- Inserir dez produtos
-INSERT INTO produtos (nome, descricao, imagem, preco, categoria_id, estoque)
+-- Insert ten products
+INSERT INTO products (name, description, image, price, category_id, stock)
 VALUES
-  ('Produto 1', 'Descrição do Produto 1', 'imagem1.jpg', 19.99, 1, 50),
-  ('Produto 2', 'Descrição do Produto 2', 'imagem2.jpg', 24.99, 2, 30),
-  ('Produto 3', 'Descrição do Produto 3', 'imagem3.jpg', 14.99, 1, 60),
-  ('Produto 4', 'Descrição do Produto 4', 'imagem4.jpg', 29.99, 2, 20),
-  ('Produto 5', 'Descrição do Produto 5', 'imagem5.jpg', 9.99, 1, 70),
-  ('Produto 6', 'Descrição do Produto 6', 'imagem6.jpg', 19.99, 2, 40),
-  ('Produto 7', 'Descrição do Produto 7', 'imagem7.jpg', 12.99, 1, 80),
-  ('Produto 8', 'Descrição do Produto 8', 'imagem8.jpg', 39.99, 2, 25),
-  ('Produto 9', 'Descrição do Produto 9', 'imagem9.jpg', 17.99, 1, 55),
-  ('Produto 10', 'Descrição do Produto 10', 'imagem10.jpg', 21.99, 2, 35);
+  ('Product 1', 'Product 1 Description', 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Python.svg/640px-Python.svg.png', 19.99, 1, 50),
+  ('Product 2', 'Product 2 Description', 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Python.svg/640px-Python.svg.png', 24.99, 2, 30),
+  ('Product 3', 'Product 3 Description', 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Python.svg/640px-Python.svg.png', 14.99, 1, 60),
+  ('Product 4', 'Product 4 Description', 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Python.svg/640px-Python.svg.png', 29.99, 2, 20),
+  ('Product 5', 'Product 5 Description', 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Python.svg/640px-Python.svg.png', 9.99, 1, 70),
+  ('Product 6', 'Product 6 Description', 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Python.svg/640px-Python.svg.png', 19.99, 2, 40),
+  ('Product 7', 'Product 7 Description', 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Python.svg/640px-Python.svg.png', 12.99, 1, 80),
+  ('Product 8', 'Product 8 Description', 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Python.svg/640px-Python.svg.png', 39.99, 2, 25),
+  ('Product 9', 'Product 9 Description', 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Python.svg/640px-Python.svg.png', 17.99, 1, 55),
+  ('Product 10', 'Product 10 Description', 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Python.svg/640px-Python.svg.png', 21.99, 2, 35);

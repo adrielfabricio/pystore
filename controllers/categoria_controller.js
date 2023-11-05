@@ -1,67 +1,67 @@
-const CategoriaProduto = require('../model/CategoriaProduto.js');
+const ProductCategory = require('../model/ProductCategory.js');
 const database = require('../config/database.js');
 
-// CREATE (Cria uma nova categoria de produto)
-function create(categoria) {
-  const params = [categoria.getNome()];
-  let sql = 'INSERT INTO categoria_produto (nome) VALUES (?)';
+// CREATE (Create a new product category)
+function create(category) {
+  const params = [category.getName()];
+  let sql = 'INSERT INTO product_category (name) VALUES (?)';
   database.query(sql, params, function (err, result) {
     if (err) throw err;
     console.log(
-      'Categoria de produto criada com sucesso. ID da categoria: ' +
+      'Product category created successfully. Category ID: ' +
         result.insertId,
     );
   });
 }
 
-// READ (Recupera uma categoria de produto pelo ID)
+// READ (Retrieve a product category by ID)
 async function retrieve(id) {
-  var sql = `SELECT * FROM categoria_produto WHERE id = ${id}`;
+  var sql = `SELECT * FROM product_category WHERE id = ${id}`;
   return new Promise((resolve, reject) => {
     database.query(sql, async function (err, result) {
       if (err) throw err;
       const item = result[0];
-      const categoria = new CategoriaProduto(item.id, item.nome);
-      resolve(categoria);
+      const category = new ProductCategory(item.id, item.name);
+      resolve(category);
     });
   });
 }
 
-// UPDATE (Atualiza uma categoria de produto pelo ID)
-function update(categoria) {
-  let id = categoria.getId();
-  let nome = categoria.getNome();
-  var sql = 'UPDATE categoria_produto SET nome = ? WHERE id = ?';
-  database.query(sql, [nome, id], function (err, result) {
+// UPDATE (Update a product category by ID)
+function update(category) {
+  let id = category.getId();
+  let name = category.getName();
+  var sql = 'UPDATE product_category SET name = ? WHERE id = ?';
+  database.query(sql, [name, id], function (err, result) {
     if (err) throw err;
     console.log(
-      'Categoria de produto atualizada com sucesso. Registros atualizados: ' +
+      'Product category updated successfully. Records updated: ' +
         result.affectedRows,
     );
   });
 }
 
-// DELETE (Exclui uma categoria de produto pelo ID)
+// DELETE (Delete a product category by ID)
 function destroy(id) {
-  var sql = 'DELETE FROM categoria_produto WHERE id = ?';
+  var sql = 'DELETE FROM product_category WHERE id = ?';
   database.query(sql, [id], function (err, result) {
     if (err) throw err;
     console.log(
-      'Categoria de produto excluída com sucesso. Registros excluídos: ' +
+      'Product category deleted successfully. Records deleted: ' +
         result.affectedRows,
     );
   });
 }
 
-// LIST ALL (Recupera todas as categorias de produtos)
+// LIST ALL (Retrieve all product categories)
 async function list_all() {
   let category_list = [];
   return new Promise((resolve, reject) => {
     database.query(
-      'SELECT * FROM categoria_produto',
+      'SELECT * FROM product_category',
       async function (error, collection) {
         for (const item of collection) {
-          let category = new CategoriaProduto(item.id, item.nome);
+          let category = new ProductCategory(item.id, item.name);
           category_list.push(category);
         }
         resolve(category_list);

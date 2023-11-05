@@ -1,4 +1,4 @@
-class Produto {
+class Product {
     constructor(id, name, description, price, stock, image, category_id, category){
         this.id = id;
         this.name = name;
@@ -14,50 +14,50 @@ class Produto {
         return this.id;
     }
     setId(value){
-        this.id = value
+        this.id = value;
     }
-    getNome(){
+    getName(){
         return this.name;
     }
-    setNome(value){
-        this.name = value
+    setName(value){
+        this.name = value;
     }
-    getDescricao(){
+    getDescription(){
         return this.description;
     }
-    setDescricao(value){
-        this.description = value
+    setDescription(value){
+        this.description = value;
     }
-    getPreco(){
+    getPrice(){
         return this.price;
     }
-    setPreco(value){
-        this.price = value
+    setPrice(value){
+        this.price = value;
     }
-    getEstoque(){
+    getStock(){
         return this.stock;
     }
-    setEstoque(value){
-        this.stock = value
+    setStock(value){
+        this.stock = value;
     }
-    getImagem(){
+    getImage(){
         return this.image;
     }
-    setImagem(value){
-        this.image = value
+    setImage(value){
+        this.image = value;
     }
-    getCategoria_id(){
+    getCategory_id(){
         return this.category_id;
     }
-    setCategoria_id(value){
-        this.category_id = value
+    setCategory_id(value){
+        this.category_id = value;
     }
-    getCategoria(){
+    getCategory(){
         return this.category;
     }
-    setCategoria(value){
-        this.category = value
+    setCategory(value){
+        this.category = value;
     }
 }
 
-module.exports = Produto;
+module.exports = Product;

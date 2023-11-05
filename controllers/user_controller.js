@@ -1,9 +1,9 @@
-const CategoriaProduto = require('../model/CategoriaProduto.js');
-const Parceiro = require('../model/Parceiro.js');
-const Pedidos = require('../model/Pedido.js');
-const Produto = require('../model/Produto.js');
-const TipoUsuario = require('../model/TipoUsuario.js');
-const Usuario = require('../model/Usuario.js');
+const ProductCategory = require('../model/ProductCategory.js');
+const Partner = require('../model/Partner.js');
+const Orders = require('../model/Order.js');
+const Product = require('../model/Product.js');
+const UserType = require('../model/UserType.js');
+const User = require('../model/User.js');
 const database = require('../config/database.js');
 
 // List
@@ -11,18 +11,18 @@ async function list_all() {
   let user_list = [];
   return new Promise((resolve, reject) => {
     database.query(
-      'SELECT usuarios.*, tipo_usuario.nome AS tipo FROM usuarios INNER JOIN tipo_usuario ON usuarios.tipo_usuario_id = tipo_usuario.id;',
+      'SELECT users.*, user_type.name AS type FROM users INNER JOIN user_type ON users.user_type_id = user_type.id;',
       async function (error, collection) {
         for (const item of collection) {
-          let user = new Usuario();
+          let user = new User();
           user.setId(item.id);
-          user.setNome(item.nome);
+          user.setName(item.name);
           user.setEmail(item.email);
-          user.setSenha(item.senha);
-          user.setEndereco(item.endereco);
-          user.setCep(item.cep);
-          user.setTipo_usuario_id(item.tipo_usuario_id);
-          user.setTipo(item.tipo);
+          user.setPassword(item.password);
+          user.setAddress(item.address);
+          user.setZipCode(item.zip_code);
+          user.setUserTypeId(item.user_type_id);
+          user.setType(item.type);
 
           user_list.push(user);
         }
@@ -35,15 +35,15 @@ async function list_all() {
 // POST
 function create(user) {
   const params = [
-    user.getNome(),
+    user.getName(),
     user.getEmail(),
-    user.getSenha(),
-    user.getEndereco(),
-    user.getCep(),
-    user.getTipo_usuario_id(),
+    user.getPassword(),
+    user.getAddress(),
+    user.getZipCode(),
+    user.getUserTypeId(),
   ];
   let sql =
-    'INSERT INTO usuarios (nome, email, senha, endereco, cep, tipo_usuario_id) VALUES (?, ?, ?, ?, ?, ?)';
+    'INSERT INTO users (name, email, password, address, zip_code, user_type_id) VALUES (?, ?, ?, ?, ?, ?)';
   database.query(sql, params, function (err, result) {
     if (err) throw err;
     console.log('1 record inserted');
@@ -52,20 +52,20 @@ function create(user) {
 
 // Retrieve
 async function retrieve(id) {
-  var sql = `SELECT usuarios.*, tipo_usuario.nome AS tipo FROM usuarios INNER JOIN tipo_usuario ON usuarios.tipo_usuario_id = tipo_usuario.id WHERE usuarios.id = ${id}`;
+  var sql = `SELECT users.*, user_type.name AS type FROM users INNER JOIN user_type ON users.user_type_id = user_type.id WHERE users.id = ${id}`;
   return new Promise((resolve, reject) => {
     database.query(sql, async function (err, result) {
       if (err) throw err;
       const item = result[0];
-      const user = new Usuario(
+      const user = new User(
         item.id,
-        item.nome,
+        item.name,
         item.email,
-        item.senha,
-        item.endereco,
-        item.cep,
-        item.tipo_usuario_id,
-        item.tipo,
+        item.password,
+        item.address,
+        item.zip_code,
+        item.user_type_id,
+        item.type,
       );
       resolve(user);
     });
@@ -75,18 +75,18 @@ async function retrieve(id) {
 // UPDATE
 function update(user) {
   let id = user.getId();
-  let nome = user.getNome();
+  let name = user.getName();
   let email = user.getEmail();
-  let senha = user.getSenha();
-  let endereco = user.getEndereco();
-  let cep = user.getCep();
-  let tipo_usuario_id = user.getTipo_usuario_id();
+  let password = user.getPassword();
+  let address = user.getAddress();
+  let zip_code = user.getZipCode();
+  let user_type_id = user.getUserTypeId();
 
   var sql =
-    'UPDATE usuarios SET nome = ?, email = ?, senha = ?, endereco = ?, cep = ?, tipo_usuario_id = ? WHERE id = ?';
+    'UPDATE users SET name = ?, email = ?, password = ?, address = ?, zip_code = ?, user_type_id = ? WHERE id = ?';
   database.query(
     sql,
-    [nome, email, senha, endereco, cep, tipo_usuario_id, id],
+    [name, email, password, address, zip_code, user_type_id, id],
     async function (err, result) {
       if (err) throw err;
       console.log('Number of records updated: ' + result.affectedRows);
@@ -96,7 +96,7 @@ function update(user) {
 
 // Delete
 function destroy(id) {
-  var sql = 'DELETE FROM usuarios WHERE id = ?';
+  var sql = 'DELETE FROM users WHERE id = ?';
   database.query(sql, [id], function (err, result) {
     if (err) throw err;
     console.log('Number of records deleted: ' + result.affectedRows);

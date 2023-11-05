@@ -64,6 +64,7 @@ app.get('/services', (req, res) => {
   res.render('pages/services');
 });
 
+// Admin page (list all clients)
 app.get('/customers', async (req, res) => {
   const customers = await clienteController.list_all();
   res.render('pages/customers', {
@@ -211,3 +212,6 @@ app.post('/buy', (req, res) => {
 app.listen(port, () => {
   console.debug(`server started at http://localhost:${port}`);
 });
+
+
+// DROP DATABASE IF EXISTS your_database_name;

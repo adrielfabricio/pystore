@@ -1,63 +1,63 @@
-class Usuario {
-    constructor(id, nome, email, senha, endereco, cep, tipo_usuario_id, tipo){
+class User {
+    constructor(id, name, email, password, address, zipCode, userType_id, type) {
         this.id = id;
-        this.nome = nome;
+        this.name = name;
         this.email = email;
-        this.senha = senha;
-        this.endereco = endereco;
-        this.cep = cep;
-        this.tipo_usuario_id = tipo_usuario_id;
-        this.tipo = tipo;
+        this.password = password;
+        this.address = address;
+        this.zipCode = zipCode;
+        this.userType_id = userType_id;
+        this.type = type;
     }
 
-    getId(){
+    getId() {
         return this.id;
     }
-    setId(value){
-        this.id = value
+    setId(value) {
+        this.id = value;
     }
-    getNome(){
-        return this.nome;
+    getName() {
+        return this.name;
     }
-    setNome(value){
-        this.nome = value
+    setName(value) {
+        this.name = value;
     }
-    getEmail(){
+    getEmail() {
         return this.email;
     }
-    setEmail(value){
-        this.email = value
+    setEmail(value) {
+        this.email = value;
     }
-    getSenha(){
-        return this.senha;
+    getPassword() {
+        return this.password;
     }
-    setSenha(value){
-        this.senha = value
+    setPassword(value) {
+        this.password = value;
     }
-    getEndereco(){
-        return this.endereco;
+    getAddress() {
+        return this.address;
     }
-    setEndereco(value){
-        this.endereco = value
+    setAddress(value) {
+        this.address = value;
     }
-    getCep(){
-        return this.cep;
+    getZipCode() {
+        return this.zipCode;
     }
-    setCep(value){
-        this.cep = value
+    setZipCode(value) {
+        this.zipCode = value;
     }
-    getTipo_usuario_id(){
-        return this.tipo_usuario_id;
+    getUserType_id() {
+        return this.userType_id;
     }
-    setTipo_usuario_id(value){
-        this.tipo_usuario_id = value
+    setUserType_id(value) {
+        this.userType_id = value;
     }
-    getTipo(){
-        return this.tipo;
+    getType() {
+        return this.type;
     }
-    setTipo(value){
-        this.tipo = value
+    setType(value) {
+        this.type = value;
     }
 }
 
-module.exports = Usuario;
+module.exports = User;

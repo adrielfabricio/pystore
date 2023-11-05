@@ -1,21 +1,21 @@
-class TipoUsuario {
-    constructor(id, nome){
+class UserType {
+    constructor(id, name) {
         this.id = id;
-        this.nome = nome;
+        this.name = name;
     }
 
-    getId(){
+    getId() {
         return this.id;
     }
-    setId(value){
-        this.id = value
+    setId(value) {
+        this.id = value;
     }
-    getNome(){
-        return this.nome;
+    getName() {
+        return this.name;
     }
-    setNome(value){
-        this.nome = value
+    setName(value) {
+        this.name = value;
     }
 }
 
-module.exports = TipoUsuario;
+module.exports = UserType;

@@ -1,102 +1,98 @@
-const Produto = require('../model/Produto.js');
+const Product = require('../model/Product.js');
 const database = require('../config/database.js');
 
-// CREATE (Cria um novo produto)
-function create(produto) {
+// CREATE (Create a new product)
+function create(product) {
   const params = [
-    produto.getNome(),
-    produto.getDescricao(),
-    produto.getPreco(),
-    produto.getEstoque(),
-    produto.getImagem(),
-    produto.getCategoria_id(),
+    product.getName(),
+    product.getDescription(),
+    product.getPrice(),
+    product.getStock(),
+    product.getImage(),
+    product.getCategory_id(),
   ];
   let sql =
-    'INSERT INTO produtos (nome, descricao, preco, estoque, imagem, categoria_id) VALUES (?, ?, ?, ?, ?, ?)';
+    'INSERT INTO products (name, description, price, stock, image, category_id) VALUES (?, ?, ?, ?, ?, ?)';
   database.query(sql, params, function (err, result) {
     if (err) throw err;
-    console.log(
-      'Produto criado com sucesso. ID do produto: ' + result.insertId,
-    );
+    console.log('Product created successfully. Product ID: ' + result.insertId);
   });
 }
 
-// READ (Recupera um produto pelo ID)
+// READ (Retrieve a product by ID)
 async function retrieve(id) {
-  var sql = `SELECT produtos.*, categoria_produto.nome AS categoria FROM produtos INNER JOIN categoria_produto ON produtos.categoria_id = categoria_produto.id WHERE produtos.id = ${id}`;
+  var sql = `SELECT products.*, product_category.name AS category FROM products INNER JOIN product_category ON products.category_id = product_category.id WHERE products.id = ${id}`;
   return new Promise((resolve, reject) => {
     database.query(sql, async function (err, result) {
       if (err) throw err;
       const item = result[0];
-      const produto = new Produto(
+      const product = new Product(
         item.id,
-        item.nome,
-        item.descricao,
-        item.preco,
-        item.estoque,
-        item.imagem,
-        item.categoria_id,
-        item.categoria,
+        item.name,
+        item.description,
+        item.price,
+        item.stock,
+        item.image,
+        item.category_id,
+        item.category,
       );
-      resolve(produto);
+      resolve(product);
     });
   });
 }
 
-// UPDATE (Atualiza um produto pelo ID)
-function update(produto) {
-  let id = produto.getId();
-  let nome = produto.getNome();
-  let descricao = produto.getDescricao();
-  let preco = produto.getPreco();
-  let estoque = produto.getEstoque();
-  let imagem = produto.getImagem();
-  let categoria_id = produto.getCategoria_id();
+// UPDATE (Update a product by ID)
+function update(product) {
+  let id = product.getId();
+  let name = product.getName();
+  let description = product.getDescription();
+  let price = product.getPrice();
+  let stock = product.getStock();
+  let image = product.getImage();
+  let category_id = product.getCategory_id();
 
   var sql =
-    'UPDATE produtos SET nome = ?, descricao = ?, preco = ?, estoque = ?, imagem = ?, categoria_id = ? WHERE id = ?';
+    'UPDATE products SET name = ?, description = ?, price = ?, stock = ?, image = ?, category_id = ? WHERE id = ?';
   database.query(
     sql,
-    [nome, descricao, preco, estoque, imagem, categoria_id, id],
+    [name, description, price, stock, image, category_id, id],
     function (err, result) {
       if (err) throw err;
       console.log(
-        'Produto atualizado com sucesso. Registros atualizados: ' +
-          result.affectedRows,
+        'Product updated successfully. Records updated: ' + result.affectedRows,
       );
     },
   );
 }
 
-// DELETE (Exclui um produto pelo ID)
+// DELETE (Delete a product by ID)
 function destroy(id) {
-  var sql = 'DELETE FROM produtos WHERE id = ?';
+  var sql = 'DELETE FROM products WHERE id = ?';
   database.query(sql, [id], function (err, result) {
     if (err) throw err;
     console.log(
-      'Produto excluído com sucesso. Registros excluídos: ' +
-        result.affectedRows,
+      'Product deleted successfully. Records deleted: ' + result.affectedRows,
     );
   });
 }
 
-// LIST ALL (Recupera todos os produtos)
+// LIST ALL (Retrieve all products)
 async function list_all() {
   let product_list = [];
   return new Promise((resolve, reject) => {
     database.query(
-      'SELECT produtos.*, categoria_produto.nome AS categoria FROM produtos INNER JOIN categoria_produto ON produtos.categoria_id = categoria_produto.id',
+      'SELECT products.*, product_category.name AS category FROM products INNER JOIN product_category ON products.category_id = product_category.id',
       async function (error, collection) {
         for (let item of collection) {
-          let product = new Produto(
+          let product = new Product(
             item.id,
-            item.nome,
-            item.descricao,
-            item.preco,
-            item.estoque,
-            item.imagem,
-            item.categoria_id,
-            item.categoria,
+            item.name,
+            item.description,
+            item.price,
+            item.stock,
+            item.image,
+            item.category_id,
+            item.category,
           );
           product_list.push(product);
         }
@@ -106,24 +102,24 @@ async function list_all() {
   });
 }
 
-// LIST BY CATEGORY (Recupera produtos por ID de categoria)
+// LIST BY CATEGORY (Retrieve products by category ID)
 async function list_by_category(category_id) {
   let product_list = [];
   return new Promise((resolve, reject) => {
     database.query(
-      'SELECT produtos.*, categoria_produto.nome AS categoria FROM produtos INNER JOIN categoria_produto ON produtos.categoria_id = categoria_produto.id WHERE produtos.categoria_id = ?',
+      'SELECT products.*, product_category.name AS category FROM products INNER JOIN product_category ON products.category_id = product_category.id WHERE products.category_id = ?',
       [category_id],
       async function (error, collection) {
         for (const item of collection) {
-          let product = new Produto(
+          let product = new Product(
             item.id,
-            item.nome,
-            item.descricao,
-            item.preco,
-            item.estoque,
-            item.imagem,
-            item.categoria_id,
-            item.categoria,
+            item.name,
+            item.description,
+            item.price,
+            item.stock,
+            item.image,
+            item.category_id,
+            item.category,
           );
           product_list.push(product);
         }

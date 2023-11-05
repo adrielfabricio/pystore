@@ -1,38 +1,38 @@
-const Pedido = require('../model/Pedido.js');
+const Order = require('../model/Order.js');
 const database = require('../config/database.js');
 
-// CREATE (Cria um novo pedido)
-function create(pedido) {
+// CREATE (Create a new order)
+function create(order) {
   const params = [
-    pedido.getClienteId(),
-    pedido.getData(),
-    pedido.getStatus(),
-    pedido.getValor(),
+    order.getCustomerId(),
+    order.getDate(),
+    order.getStatus(),
+    order.getValue(),
   ];
   let sql =
-    'INSERT INTO pedidos (cliente_id, data, status, valor) VALUES (?, ?, ?, ?)';
+    'INSERT INTO orders (customer_id, date, status, value) VALUES (?, ?, ?, ?)';
   database.query(sql, params, function (err, result) {
     if (err) throw err;
-    console.log('Pedido criado com sucesso. ID do pedido: ' + result.insertId);
+    console.log('Order created successfully. Order ID: ' + result.insertId);
 
-    // Após a criação do pedido, adicione os produtos associados a ele na tabela produtos_pedidos
-    const pedidoId = result.insertId;
-    const produtos = pedido.getProdutos();
-    for (const produto of produtos) {
-      const produtoId = produto.id;
-      const quantidade = produto.quantidade;
-      let produtosPedidosSql =
-        'INSERT INTO produtos_pedidos (pedido_id, produto_id, quantidade) VALUES (?, ?, ?)';
+    // After creating the order, add the associated products to the products_orders table
+    const orderId = result.insertId;
+    const products = order.getProducts();
+    for (const product of products) {
+      const productId = product.id;
+      const quantity = product.quantity;
+      let productsOrdersSql =
+        'INSERT INTO products_orders (order_id, product_id, quantity) VALUES (?, ?, ?)';
       database.query(
-        produtosPedidosSql,
-        [pedidoId, produtoId, quantidade],
+        productsOrdersSql,
+        [orderId, productId, quantity],
         function (err, result) {
           if (err) throw err;
           console.log(
-            'Produto adicionado ao pedido. Pedido ID: ' +
-              pedidoId +
-              ', Produto ID: ' +
-              produtoId,
+            'Product added to the order. Order ID: ' +
+              orderId +
+              ', Product ID: ' +
+              productId,
           );
         },
       );
@@ -40,133 +40,131 @@ function create(pedido) {
   });
 }
 
-// READ (Recupera um pedido pelo ID)
+// READ (Retrieve an order by ID)
 async function retrieve(id) {
-  var sql = `SELECT * FROM pedidos WHERE id = ${id}`;
+  var sql = `SELECT * FROM orders WHERE id = ${id}`;
   return new Promise((resolve, reject) => {
     database.query(sql, async function (err, result) {
       if (err) throw err;
       const item = result[0];
-      const pedido = new Pedido(
+      const order = new Order(
         item.id,
-        item.cliente_id,
-        item.data,
+        item.customer_id,
+        item.date,
         item.status,
-        item.valor,
+        item.value,
         [],
       );
 
-      // Recupere os produtos associados a este pedido na tabela produtos_pedidos
-      let produtosSql = `SELECT produtos.*, produtos_pedidos.quantidade
-        FROM produtos_pedidos
-        INNER JOIN produtos ON produtos_pedidos.produto_id = produtos.id
-        WHERE produtos_pedidos.pedido_id = ${id}`;
+      // Retrieve the products associated with this order in the products_orders table
+      let productsSql = `SELECT products.*, products_orders.quantity
+        FROM products_orders
+        INNER JOIN products ON products_orders.product_id = products.id
+        WHERE products_orders.order_id = ${id}`;
 
-      database.query(produtosSql, async function (err, produtosResult) {
+      database.query(productsSql, async function (err, productsResult) {
         if (err) throw err;
-        const produtos = [];
-        for (const produtoItem of produtosResult) {
-          const produto = {
-            id: produtoItem.id,
-            nome: produtoItem.nome,
-            descricao: produtoItem.descricao,
-            preco: produtoItem.preco,
-            estoque: produtoItem.estoque,
-            imagem: produtoItem.imagem,
-            categoria_id: produtoItem.categoria_id,
-            quantidade: produtoItem.quantidade,
+        const products = [];
+        for (const productItem of productsResult) {
+          const product = {
+            id: productItem.id,
+            name: productItem.name,
+            description: productItem.description,
+            price: productItem.price,
+            stock: productItem.stock,
+            image: productItem.image,
+            category_id: productItem.category_id,
+            quantity: productItem.quantity,
           };
-          produtos.push(produto);
+          products.push(product);
         }
-        pedido.setProdutos(produtos);
-        resolve(pedido);
+        order.setProducts(products);
+        resolve(order);
       });
     });
   });
 }
 
-// UPDATE (Atualiza um pedido pelo ID)
-function update(pedido) {
-  let id = pedido.getId();
-  let cliente_id = pedido.getClienteId();
-  let data = pedido.getData();
-  let status = pedido.getStatus();
-  let valor = pedido.getValor();
+// UPDATE (Update an order by ID)
+function update(order) {
+  let id = order.getId();
+  let customer_id = order.getCustomerId();
+  let date = order.getDate();
+  let status = order.getStatus();
+  let value = order.getValue();
   var sql =
-    'UPDATE pedidos SET cliente_id = ?, data = ?, status = ?, valor = ? WHERE id = ?';
-  database.query(sql, [cliente_id, data, status, valor, id], function (err, result) {
+    'UPDATE orders SET customer_id = ?, date = ?, status = ?, value = ? WHERE id = ?';
+  database.query(sql, [customer_id, date, status, value, id], function (err, result) {
     if (err) throw err;
     console.log(
-      'Pedido atualizado com sucesso. Registros atualizados: ' +
-        result.affectedRows,
+      'Order updated successfully. Records updated: ' + result.affectedRows,
     );
   });
 }
 
-// DELETE (Exclui um pedido pelo ID)
+// DELETE (Delete an order by ID)
 function destroy(id) {
-  var sql = 'DELETE FROM pedidos WHERE id = ?';
+  var sql = 'DELETE FROM orders WHERE id = ?';
   database.query(sql, [id], function (err, result) {
     if (err) throw err;
     console.log(
-      'Pedido excluído com sucesso. Registros excluídos: ' +
-        result.affectedRows,
+      'Order deleted successfully. Records deleted: ' + result.affectedRows,
     );
 
-    // Também exclua os produtos associados a este pedido na tabela produtos_pedidos
-    var produtosPedidosSql = 'DELETE FROM produtos_pedidos WHERE pedido_id = ?';
-    database.query(produtosPedidosSql, [id], function (err, result) {
+    // Also delete the products associated with this order in the products_orders table
+    var productsOrdersSql = 'DELETE FROM products_orders WHERE order_id = ?';
+    database.query(productsOrdersSql, [id], function (err, result) {
       if (err) throw err;
       console.log(
-        'Produtos associados ao pedido também foram excluídos. Registros excluídos: ' +
+        'Products associated with the order were also deleted. Records deleted: ' +
           result.affectedRows,
       );
     });
   });
 }
 
-// LIST ALL (Recupera todos os pedidos)
+// LIST ALL (Retrieve all orders)
 async function list_all() {
-  let pedido_list = [];
+  let order_list = [];
   return new Promise((resolve, reject) => {
-    database.query('SELECT * FROM pedidos', async function (error, collection) {
+    database.query('SELECT * FROM orders', async function (error, collection) {
       for (const item of collection) {
-        let pedido = new Pedido(
+        let order = new Order(
           item.id,
-          item.cliente_id,
-          item.data,
+          item.customer_id,
+          item.date,
           item.status,
-          item.valor,
+          item.value,
           [],
         );
 
-        // Recupere os produtos associados a este pedido na tabela produtos_pedidos
-        let produtosSql = `SELECT produtos.*, produtos_pedidos.quantidade
-          FROM produtos_pedidos
-          INNER JOIN produtos ON produtos_pedidos.produto_id = produtos.id
-          WHERE produtos_pedidos.pedido_id = ${item.id}`;
+        // Retrieve the products associated with this order in the products_orders table
+        let productsSql = `SELECT products.*, products_orders.quantity
+          FROM products_orders
+          INNER JOIN products ON products_orders.product_id = products.id
+          WHERE products_orders.order_id = ${item.id}`;
 
-        database.query(produtosSql, async function (err, produtosResult) {
+        database.query(productsSql, async function (err, productsResult) {
           if (err) throw err;
-          const produtos = [];
-          for (const produtoItem of produtosResult) {
-            const produto = {
-              id: produtoItem.id,
-              nome: produtoItem.nome,
-              descricao: produtoItem.descricao,
-              preco: produtoItem.preco,
-              estoque: produtoItem.estoque,
-              imagem: produtoItem.imagem,
-              categoria_id: produtoItem.categoria_id,
-              quantidade: produtoItem.quantidade,
+          const products = [];
+          for (const productItem of productsResult) {
+            const product = {
+              id: productItem.id,
+              name: productItem.name,
+              description: productItem.description,
+              price: productItem.price,
+              stock: productItem.stock,
+              image: productItem.image,
+              category_id: productItem.category_id,
+              quantity: productItem.quantity,
             };
-            produtos.push(produto);
+            products.push(product);
           }
-          pedido.setProdutos(produtos);
-          pedido_list.push(pedido);
+          order.setProducts(products);
+          order_list.push(order);
         });
       }
-      resolve(pedido_list);
+      resolve(order_list);
     });
   });
 }
