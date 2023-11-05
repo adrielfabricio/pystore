@@ -39,6 +39,16 @@
           </div>
 
           <div class="form-group">
+            <label for="productName">Nome do produto</label>
+            <input
+              type="text"
+              class="form-control"
+              id="productName"
+              placeholder="Nome do produto"
+              name="name"
+              value="<%= product.name %>" />
+          </div>
+          <div class="form-group">
             <label for="productDescription">Descrição</label>
             <textarea
               class="form-control"
@@ -62,7 +72,7 @@
           <div class="form-group">
             <label for="productPrice">Preço</label>
             <input
-              type="text"
+              type="number"
               class="form-control"
               id="productPrice"
               placeholder="Preço"
@@ -73,7 +83,7 @@
           <div class="form-group">
             <label for="productCategory">Categoria</label>
             <input
-              type="number"
+              type="text"
               class="form-control"
               id="productCategory"
               placeholder="Categoria"
@@ -84,7 +94,7 @@
           <div class="form-group">
             <label for="productStock">Estoque</label>
             <input
-              type="text"
+              type="number"
               class="form-control"
               id="productStock"
               placeholder="Estoque"

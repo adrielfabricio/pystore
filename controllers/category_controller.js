@@ -2,15 +2,32 @@ const ProductCategory = require('../model/ProductCategory.js');
 const database = require('../config/database.js');
 
 // CREATE (Create a new product category)
-function create(category) {
+async function create(category, callback) {
   const params = [category.getName()];
   let sql = 'INSERT INTO product_category (name) VALUES (?)';
-  database.query(sql, params, function (err, result) {
-    if (err) throw err;
-    console.log(
-      'Product category created successfully. Category ID: ' +
-        result.insertId,
-    );
+  
+  return new Promise((resolve, reject) => { // Retornar uma Promise para a rota aguardar
+    database.query(sql, params, function (err, result) {
+      if (err) {
+        console.error('Error creating product category:', err);
+        reject(err); // Rejeitar a Promise em caso de erro
+      } else {
+        console.log(
+          'Product category created successfully. Category ID: ' +
+            result.insertId
+        );
+
+        // Recupera o item recém-criado no banco de dados
+        const insertedCategoryId = result.insertId;
+        retrieve(insertedCategoryId)
+          .then(category => {
+            resolve(category); // Resolve a Promise com a categoria criada
+          })
+          .catch(err => {
+            reject(err); // Rejeitar a Promise em caso de erro na recuperação
+          });
+      }
+    });
   });
 }
 
@@ -26,6 +43,23 @@ async function retrieve(id) {
     });
   });
 }
+// READ (Retrieve a product category by NAME)
+async function retrieve_by_name(name) {
+  var sql = `SELECT * FROM product_category WHERE name = "${name}"`;
+  return new Promise((resolve, reject) => {
+    database.query(sql, async function (err, result) {
+      if (err) throw err;
+      if (result.length === 0) {
+        resolve(false); // Retorna false se nenhuma categoria for encontrada
+      } else {
+        const item = result[0];
+        const category = new ProductCategory(item.id, item.name);
+        resolve(category);
+      }
+    });
+  });
+}
+
 
 // UPDATE (Update a product category by ID)
 function update(category) {
@@ -73,6 +107,7 @@ async function list_all() {
 module.exports = {
   create: create,
   retrieve: retrieve,
+  retrieve_by_name: retrieve_by_name,
   update: update,
   destroy: destroy,
   list_all: list_all,

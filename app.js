@@ -8,9 +8,9 @@ const Product = require('./model/Product');
 const ProductCategory = require('./model/ProductCategory');
 const User = require('./model/User')
 // controllers
-const produtoController = require('./controllers/product_controller');
-const categoriaController = require('./controllers/category_controller');
-const clienteController = require('./controllers/user_controller');
+const productController = require('./controllers/product_controller');
+const categoryController = require('./controllers/category_controller');
+const clientController = require('./controllers/user_controller');
 // constants
 const { port } = require('./config/constants');
 
@@ -40,7 +40,7 @@ app.use('/uploads', express.static('uploads'));
 
 // home page (list all products)
 app.get('/', async function (req, res) {
-  const products = await produtoController.list_all();
+  const products = await productController.list_all();
 
   res.render('pages/home', {
     products: products,
@@ -51,8 +51,8 @@ app.get('/', async function (req, res) {
 
 // Admin page (list all products and categories)
 app.get('/admin', async function (req, res) {
-  const products = await produtoController.list_all();
-  const categories = await categoriaController.list_all();
+  const products = await productController.list_all();
+  const categories = await categoryController.list_all();
   res.render('pages/admin', {
     isAdmin: true,
     products,
@@ -67,7 +67,7 @@ app.get('/services', (req, res) => {
 
 // Admin page (list all clients)
 app.get('/customers', async (req, res) => {
-  const customers = await clienteController.list_all();
+  const customers = await clientController.list_all();
   res.render('pages/customers', {
     isAdmin: true,
     customers,
@@ -80,7 +80,7 @@ app.post('/customers', (req, res) => {
   const user_type_id = 2;   // Default user type (client)
 
   const customer = new User(null, name, email, password, address, cep, user_type_id, 'client');
-  clienteController.create(customer)
+  clientController.create(customer)
   res.redirect('/customers');
 });
 
@@ -93,89 +93,59 @@ app.put('/customers/:id', (req, res) => {
   const user_type_id = 2;   // Default user type (client)
 
   const customer = new User(id, name, email, password, address, cep, user_type_id, 'client');
-  clienteController.update(customer)
+  clientController.update(customer)
   res.redirect('/customers');
 });
 
 app.delete('/customers/:id', (req, res) => {
   const customerId = parseInt(req.params.id);
 
-  clienteController.destroy(customerId)
+  clientController.destroy(customerId)
   res.redirect('/customers');
 });
 
 // create product
-app.post('/products', upload.single('image'), (req, res) => {
+app.post('/products', upload.single('image'), async (req, res) => {
   const { name, description, price, stock, category } = req.body;
-  const image = req.image;
+  const file = req.file;
+  let image = ''
+  if (typeof file !='undefined') {
+    image = file.filename
+  } 
 
-  // TODO: ajustar codigo de criacao de produtos para os novos nomes
-  // ...
+  let category_in_db = await categoryController.retrieve_by_name(category);
+  if (!category_in_db) {
+    new_cat = new ProductCategory(null, category);
+    category_in_db = await categoryController.create(new_cat);
+  }
 
-  // const produto = new Product(
-  //   0,
-  //   nome,
-  //   descricao,
-  //   preco,
-  //   estoque,
-  //   imagem,
-  //   categoria_id,
-  // );
-
-  // produtoController.create(produto, result => {
-  //   if (result) {
-  //     res.status(201).json({ message: 'Product criado com sucesso' });
-  //   } else {
-  //     res.status(500).json({ message: 'Erro ao criar o produto' });
-  //   }
-  // });
-
-  // redirect
+  const product = new Product(null, name, description, price, stock, image, category_in_db.id, category_in_db.name)
+  productController.create(product)
   res.redirect('/admin');
 });
 
 // destroy product
 app.delete('/products/:id', (req, res) => {
   const productId = parseInt(req.params.id);
-  
-  // TODO: revisar logica de exclusao no banco de dados
-  // produtoController.destroy(productId, result => {
-  //   // Lógica para lidar com o resultado da exclusão do produto
-  //   if (result) {
-  //     res.status(200).json({ message: 'Product excluído com sucesso' });
-  //   } else {
-  //     res.status(500).json({ message: 'Erro ao excluir o produto' });
-  //   }
-  // });
-
+  productController.destroy(productId)
   res.redirect('/admin');
 });
 
 // update product
-app.put('/products/:id', (req, res) => {
+app.put('/products/:id', async(req, res) => {
   const id = parseInt(req.params.id);
-  const { name, description, price, stock, image, category } =
-    req.body;
+  const { name, description, price, stock, image, category } = req.body;
 
-  // TODO: atualizar logica para atualizacao de produto
-  // const produto = new Product(
-  //   id,
-  //   nome,
-  //   descricao,
-  //   preco,
-  //   estoque,
-  //   imagem,
-  //   categoria_id,
-  // );
-
-  // produtoController.update(produto, result => {
-  //   if (result) {
-  //     res.status(200).json({ message: 'Product atualizado com sucesso' });
-  //   } else {
-  //     res.status(500).json({ message: 'Erro ao atualizar o produto' });
-  //   }
-  // });
+  let category_in_db = await categoryController.retrieve_by_name(category);
+  if (!category_in_db) {
+    new_cat = new ProductCategory(null, category);
+    category_in_db = await categoryController.create(new_cat);
+  }
+  
+  const product = new Product(id, name, description, price, stock, image, category_in_db.id, category_in_db.name)
+  productController.update(product)
   res.redirect('/admin');
+
 });
 
 // aux routes
@@ -187,7 +157,7 @@ app.get('/add-to-cart/:item', async (req, res) => {
     existingItem.quantity++;
     totalPrice += existingItem.price;
   } else {
-    const produto = await produtoController.retrieve(id);
+    const produto = await productController.retrieve(id);
     if (produto) {
       totalPrice += produto.price;
       cart.push({
@@ -205,10 +175,12 @@ app.get('/clear-cart', (req, res) => {
 });
 
 // buy route
-app.post('/buy', (req, res) => {
-  // TODO: variavel cart pode ser manipulada aqui para enviar os dados para o banco
-
-  // reset data and redirect to home
+app.post('/buy', async (req, res) => {
+  for (let item of cart) { 
+    item.stock = item.stock - item.quantity 
+    const product = new Product(item.id, item.name, item.description, item.price, item.stock, item.image, item.category_id, item.category)
+    productController.update(product)
+  }
   cart = [];
   res.redirect('/');
 });
