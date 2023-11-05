@@ -1,14 +1,15 @@
-const express = require('express');
+ const express = require('express');
 const multer = require('multer');
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
 
 // models
-const Produto = require('./model/Produto');
-const CategoriaProduto = require('./model/CategoriaProduto');
+const Product = require('./model/Product');
+const ProductCategory = require('./model/ProductCategory');
+const User = require('./model/User')
 // controllers
-const produtoController = require('./controllers/produto_controller');
-const categoriaController = require('./controllers/categoria_controller');
+const produtoController = require('./controllers/product_controller');
+const categoriaController = require('./controllers/category_controller');
 const clienteController = require('./controllers/user_controller');
 // constants
 const { port } = require('./config/constants');
@@ -75,28 +76,31 @@ app.get('/customers', async (req, res) => {
 
 app.post('/customers', (req, res) => {
   const { name, email, address, cep } = req.body;
+  const password = name + cep; // Default password
+  const user_type_id = 2;   // Default user type (client)
 
-  // TODO: implementar create na base de dados para o cliente
-  // ...
-
+  const customer = new User(null, name, email, password, address, cep, user_type_id, 'client');
+  clienteController.create(customer)
   res.redirect('/customers');
 });
+
 
 app.put('/customers/:id', (req, res) => {
   const id = parseInt(req.params.id);
   const { name, email, address, cep } = req.body;
 
-  // TODO: implementar logica para atualizar user na base dados
-  // ...
+  const password = name + cep; // Default password
+  const user_type_id = 2;   // Default user type (client)
 
+  const customer = new User(id, name, email, password, address, cep, user_type_id, 'client');
+  clienteController.update(customer)
   res.redirect('/customers');
 });
 
 app.delete('/customers/:id', (req, res) => {
   const customerId = parseInt(req.params.id);
 
-  // TODO: implementar lógica de delecao de usuario da base de dados
-  
+  clienteController.destroy(customerId)
   res.redirect('/customers');
 });
 
@@ -108,7 +112,7 @@ app.post('/products', upload.single('image'), (req, res) => {
   // TODO: ajustar codigo de criacao de produtos para os novos nomes
   // ...
 
-  // const produto = new Produto(
+  // const produto = new Product(
   //   0,
   //   nome,
   //   descricao,
@@ -120,7 +124,7 @@ app.post('/products', upload.single('image'), (req, res) => {
 
   // produtoController.create(produto, result => {
   //   if (result) {
-  //     res.status(201).json({ message: 'Produto criado com sucesso' });
+  //     res.status(201).json({ message: 'Product criado com sucesso' });
   //   } else {
   //     res.status(500).json({ message: 'Erro ao criar o produto' });
   //   }
@@ -138,7 +142,7 @@ app.delete('/products/:id', (req, res) => {
   // produtoController.destroy(productId, result => {
   //   // Lógica para lidar com o resultado da exclusão do produto
   //   if (result) {
-  //     res.status(200).json({ message: 'Produto excluído com sucesso' });
+  //     res.status(200).json({ message: 'Product excluído com sucesso' });
   //   } else {
   //     res.status(500).json({ message: 'Erro ao excluir o produto' });
   //   }
@@ -154,7 +158,7 @@ app.put('/products/:id', (req, res) => {
     req.body;
 
   // TODO: atualizar logica para atualizacao de produto
-  // const produto = new Produto(
+  // const produto = new Product(
   //   id,
   //   nome,
   //   descricao,
@@ -166,7 +170,7 @@ app.put('/products/:id', (req, res) => {
 
   // produtoController.update(produto, result => {
   //   if (result) {
-  //     res.status(200).json({ message: 'Produto atualizado com sucesso' });
+  //     res.status(200).json({ message: 'Product atualizado com sucesso' });
   //   } else {
   //     res.status(500).json({ message: 'Erro ao atualizar o produto' });
   //   }

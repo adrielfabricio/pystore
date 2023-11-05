@@ -1,12 +1,12 @@
 class User {
-    constructor(id, name, email, password, address, zipCode, userType_id, type) {
+    constructor(id, name, email, password, address, zip_code, user_type_id, type) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
         this.address = address;
-        this.zipCode = zipCode;
-        this.userType_id = userType_id;
+        this.zip_code = zip_code;
+        this.user_type_id = user_type_id;
         this.type = type;
     }
 
@@ -41,16 +41,16 @@ class User {
         this.address = value;
     }
     getZipCode() {
-        return this.zipCode;
+        return this.zip_code;
     }
     setZipCode(value) {
-        this.zipCode = value;
+        this.zip_code = value;
     }
-    getUserType_id() {
-        return this.userType_id;
+    getUserTypeId() {
+        return this.user_type_id;
     }
-    setUserType_id(value) {
-        this.userType_id = value;
+    setUserTypeId(value) {
+        this.user_type_id = value;
     }
     getType() {
         return this.type;
