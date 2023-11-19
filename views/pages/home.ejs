@@ -8,14 +8,19 @@
         <div class="row justify-content-between">
           <div class="col-lg-5">
             <div class="intro-excerpt">
-              <h1>Loja</h1>
+              <h1>Personalização Tecnológica Exclusiva</h1>
+            </div>
+          </div>
+          <div class="col-lg-7">
+            <div class="hero-img-wrap hero-img-wrap-home">
+              <img src="assets/images/python.png" class="img-fluid" />
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="untree_co-section product-section before-footer-section">
+    <div class="untree_co-section product-section before-section">
       <div class="container">
         <div class="row">
           <% for (const product of products) { %>
@@ -32,7 +37,8 @@
 
               <h3 class="product-title"><%= product.name %></h3>
               <span class="product-description"
-                ><%= product.description %></span>
+                ><%= product.description %></span
+              >
               <br />
               <br />
               <strong class="product-price">R$ <%= product.price %></strong>
@@ -43,192 +49,264 @@
             </a>
           </div>
 
-          <%- include('../partials/modals/viewProduct.ejs', { product: product }) %>
-          <% } %>
+          <%- include('../partials/modals/viewProduct.ejs', { product: product
+          }) %> <% } %>
         </div>
       </div>
     </div>
 
     <div class="why-choose-section">
-			<div class="container">
-				<div class="row justify-content-between">
-					<div class="col-lg-6">
-						<h2 class="section-title">Why Choose Us</h2>
-						<p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique.</p>
+      <div class="container">
+        <div class="row justify-content-between">
+          <div class="col-lg-6">
+            <h2 class="section-title">Porque escolher-nos</h2>
+            <p>
+              Explore o mundo Python conosco: produtos personalizados, qualidade
+              superior e uma experiência única para desenvolvedores exigentes.
+            </p>
 
-						<div class="row my-5">
-							<div class="col-6 col-md-6">
-								<div class="feature">
-									<div class="icon">
-										<img src="assets/images/truck.svg" alt="Image" class="imf-fluid">
-									</div>
-									<h3>Fast &amp; Free Shipping</h3>
-									<p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.</p>
-								</div>
-							</div>
+            <div class="row my-5">
+              <div class="col-6 col-md-6">
+                <div class="feature">
+                  <div class="icon">
+                    <img
+                      src="assets/images/truck.svg"
+                      alt="Image"
+                      class="imf-fluid" />
+                  </div>
+                  <h3>Entrega</h3>
+                  <p>
+                    O e-commerce pode oferecer diferentes opções de entrega,
+                    como frete grátis, entrega expressa e entrega padrão.
+                  </p>
+                </div>
+              </div>
 
-							<div class="col-6 col-md-6">
-								<div class="feature">
-									<div class="icon">
-										<img src="assets/images/bag.svg" alt="Image" class="imf-fluid">
-									</div>
-									<h3>Easy to Shop</h3>
-									<p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.</p>
-								</div>
-							</div>
+              <div class="col-6 col-md-6">
+                <div class="feature">
+                  <div class="icon">
+                    <img
+                      src="assets/images/bag.svg"
+                      alt="Image"
+                      class="imf-fluid" />
+                  </div>
+                  <h3>Pagamento</h3>
+                  <p>
+                    O e-commerce pode oferecer diferentes opções de pagamento,
+                    como cartão de crédito, débito, boleto bancário e PayPal.
+                  </p>
+                </div>
+              </div>
 
-							<div class="col-6 col-md-6">
-								<div class="feature">
-									<div class="icon">
-										<img src="assets/images/support.svg" alt="Image" class="imf-fluid">
-									</div>
-									<h3>24/7 Support</h3>
-									<p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.</p>
-								</div>
-							</div>
+              <div class="col-6 col-md-6">
+                <div class="feature">
+                  <div class="icon">
+                    <img
+                      src="assets/images/support.svg"
+                      alt="Image"
+                      class="imf-fluid" />
+                  </div>
+                  <h3>Garantia</h3>
+                  <p>
+                    O e-commerce pode oferecer uma garantia de satisfação ou
+                    devolução do dinheiro para os clientes.
+                  </p>
+                </div>
+              </div>
 
-							<div class="col-6 col-md-6">
-								<div class="feature">
-									<div class="icon">
-										<img src="assets/images/return.svg" alt="Image" class="imf-fluid">
-									</div>
-									<h3>Hassle Free Returns</h3>
-									<p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.</p>
-								</div>
-							</div>
-
-						</div>
-					</div>
-					<div class="col-lg-5">
-						<div class="img-wrap">
-							<img src="assets/images/why-choose-us-img.jpg" alt="Image" class="img-fluid">
-						</div>
-					</div>
-
-				</div>
-			</div>
-		</div>
+              <div class="col-6 col-md-6">
+                <div class="feature">
+                  <div class="icon">
+                    <img
+                      src="assets/images/return.svg"
+                      alt="Image"
+                      class="imf-fluid" />
+                  </div>
+                  <h3>Suporte ao cliente</h3>
+                  <p>
+                    O e-commerce pode oferecer suporte ao cliente por telefone,
+                    e-mail ou chat ao vivo.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-5">
+            <div class="img-wrap">
+              <img
+                src="assets/images/mug-01.png"
+                alt="Image"
+                class="img-fluid" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div class="we-help-section">
       <div class="container">
         <div class="row justify-content-between">
           <div class="col-lg-7 mb-5 mb-lg-0">
             <div class="imgs-grid">
-              <div class="grid grid-1"><img src="assets/images/img-grid-1.jpg" alt="Untree.co"></div>
-              <div class="grid grid-2"><img src="assets/images/img-grid-2.jpg" alt="Untree.co"></div>
-              <div class="grid grid-3"><img src="assets/images/img-grid-3.jpg" alt="Untree.co"></div>
+              <div class="grid grid-1">
+                <img src="assets/images/sticker-01.png" alt="Pystore Sticker 01" />
+              </div>
+              <div class="grid grid-2">
+                <img src="assets/images/sticker-02.png" alt="Pystore Sticker 02" />
+              </div>
+              <div class="grid grid-3">
+                <img src="assets/images/sticker-03.png" alt="Pystore Sticker 03" />
+              </div>
             </div>
           </div>
           <div class="col-lg-5 ps-lg-5">
-            <h2 class="section-title mb-4">We Help You Make Modern Interior Design</h2>
-            <p>Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique. Pellentesque habitant morbi tristique senectus et netus et malesuada</p>
+            <h2 class="section-title mb-4">
+              Explore Produtos Exclusivos da Pystore
+            </h2>
+            <p>
+							A Pystore oferece uma variedade de produtos personalizados e de alta qualidade para a comunidade Python. Camisetas, canecas, adesivos e muito mais, tudo com designs exclusivos que refletem a paixão pela programação.
+            </p>
 
             <ul class="list-unstyled custom-list my-4">
-              <li>Donec vitae odio quis nisl dapibus malesuada</li>
-              <li>Donec vitae odio quis nisl dapibus malesuada</li>
-              <li>Donec vitae odio quis nisl dapibus malesuada</li>
-              <li>Donec vitae odio quis nisl dapibus malesuada</li>
+              <li>Camisas e acessórios de alta qualidade</li>
+							<li>Canecas e copos com estampas criativas de tecnologia</li>
+							<li>Pôsteres e itens de decoração para seu ambiente de trabalho</li>
+							<li>Adesivos de alta qualidade para personalizar seu setup</li>
             </ul>
-            <p><a herf="#" class="btn">Explore</a></p>
+            <p><a herf="#" class="btn">Explore Agora</a></p>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Start Testimonial Slider -->
-		<div class="testimonial-section">
-			<div class="container">
-				<div class="row">
-					<div class="col-lg-7 mx-auto text-center">
-						<h2 class="section-title">Testimonials</h2>
-					</div>
-				</div>
+    <div class="testimonial-section">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-7 mx-auto text-center">
+            <h2 class="section-title">Depoimentos</h2>
+          </div>
+        </div>
 
-				<div class="row justify-content-center">
-					<div class="col-lg-12">
-						<div class="testimonial-slider-wrap text-center">
+        <div class="row justify-content-center">
+          <div class="col-lg-12">
+            <div class="testimonial-slider-wrap text-center">
+              <div id="testimonial-nav">
+                <span class="prev" data-controls="prev"
+                  ><span class="fa fa-chevron-left"></span
+                ></span>
+                <span class="next" data-controls="next"
+                  ><span class="fa fa-chevron-right"></span
+                ></span>
+              </div>
 
-							<div id="testimonial-nav">
-								<span class="prev" data-controls="prev"><span class="fa fa-chevron-left"></span></span>
-								<span class="next" data-controls="next"><span class="fa fa-chevron-right"></span></span>
-							</div>
+              <div class="testimonial-slider">
+                <div class="item">
+                  <div class="row justify-content-center">
+                    <div class="col-lg-8 mx-auto">
+                      <div class="testimonial-block text-center">
+                        <blockquote class="mb-5">
+                          <p>
+                            &ldquo;Eu absolutamente amo a Pystore! As camisetas
+                            são de alta qualidade, super confortáveis e os
+                            designs são simplesmente incríveis. É ótimo
+                            finalmente encontrar produtos que mostram minha
+                            paixão pela programação de uma maneira estilosa.
+                            Recomendo a todos os desenvolvedores Python lá
+                            fora!&rdquo;
+                          </p>
+                        </blockquote>
+                        <div class="author-info">
+                          <div class="author-pic">
+                            <img
+                              src="assets/images/person_1.jpg"
+                              alt="Maria Jones"
+                              class="img-fluid" />
+                          </div>
+                          <h3 class="font-weight-bold">Miguel Santos</h3>
+                          <span class="position d-block mb-3"
+                            >Desenvolvedor Python há 3 anos</span
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
-							<div class="testimonial-slider">
-								
-								<div class="item">
-									<div class="row justify-content-center">
-										<div class="col-lg-8 mx-auto">
-											<div class="testimonial-block text-center">
-												<blockquote class="mb-5">
-													<p>&ldquo;Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer convallis volutpat dui quis scelerisque.&rdquo;</p>
-												</blockquote>
-												<div class="author-info">
-													<div class="author-pic">
-														<img src="assets/images/person_1.jpg" alt="Maria Jones" class="img-fluid">
-													</div>
-													<h3 class="font-weight-bold">Maria Jones</h3>
-													<span class="position d-block mb-3">CEO, Co-Founder, XYZ Inc.</span>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div> 
+                <div class="item">
+                  <div class="row justify-content-center">
+                    <div class="col-lg-8 mx-auto">
+                      <div class="testimonial-block text-center">
+                        <blockquote class="mb-5">
+                          <p>
+                            &ldquo;A Pystore tornou minha jornada de estudo em
+                            Python ainda mais emocionante. Comprei uma caneca e
+                            adesivos para o meu laptop, e agora meu espaço de
+                            estudo é cheio de estilo e personalidade. Além
+                            disso, os cupons de desconto para cursos online
+                            foram um bônus incrível para continuar aprimorando
+                            minhas habilidades.&rdquo;
+                          </p>
+                        </blockquote>
 
-								<div class="item">
-									<div class="row justify-content-center">
-										<div class="col-lg-8 mx-auto">
+                        <div class="author-info">
+                          <div class="author-pic">
+                            <img
+                              src="assets/images/person_2.jpg"
+                              alt="Maria Jones"
+                              class="img-fluid" />
+                          </div>
+                          <h3 class="font-weight-bold">João Pinto</h3>
+                          <span class="position d-block mb-3"
+                            >Estudante de Ciência da Computação</span
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
-											<div class="testimonial-block text-center">
-												<blockquote class="mb-5">
-													<p>&ldquo;Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer convallis volutpat dui quis scelerisque.&rdquo;</p>
-												</blockquote>
+                <div class="item">
+                  <div class="row justify-content-center">
+                    <div class="col-lg-8 mx-auto">
+                      <div class="testimonial-block text-center">
+                        <blockquote class="mb-5">
+                          <p>
+                            &ldquo;Como profissional de TI, sempre busquei
+                            maneiras de mostrar minha paixão pela programação. A
+                            Pystore não só oferece produtos de alta qualidade,
+                            mas também cria designs que capturam perfeitamente o
+                            espírito da comunidade Python. Minha coleção de
+                            camisetas e adesivos não para de crescer. Excelente
+                            serviço e produtos incríveis!&rdquo;
+                          </p>
+                        </blockquote>
 
-												<div class="author-info">
-													<div class="author-pic">
-														<img src="assets/images/person_2.jpg" alt="Maria Jones" class="img-fluid">
-													</div>
-													<h3 class="font-weight-bold">Maria Jones</h3>
-													<span class="position d-block mb-3">CEO, Co-Founder, XYZ Inc.</span>
-												</div>
-											</div>
+                        <div class="author-info">
+                          <div class="author-pic">
+                            <img
+                              src="assets/images/person_3.jpg"
+                              alt="Maria Jones"
+                              class="img-fluid" />
+                          </div>
+                          <h3 class="font-weight-bold">Rafael Couto</h3>
+                          <span class="position d-block mb-3"
+                            >Profissional de TI há 5 anos</span
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-										</div>
-									</div>
-								</div> 
-
-								<div class="item">
-									<div class="row justify-content-center">
-										<div class="col-lg-8 mx-auto">
-
-											<div class="testimonial-block text-center">
-												<blockquote class="mb-5">
-													<p>&ldquo;Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer convallis volutpat dui quis scelerisque.&rdquo;</p>
-												</blockquote>
-
-												<div class="author-info">
-													<div class="author-pic">
-														<img src="assets/images/person_3.jpg" alt="Maria Jones" class="img-fluid">
-													</div>
-													<h3 class="font-weight-bold">Maria Jones</h3>
-													<span class="position d-block mb-3">CEO, Co-Founder, XYZ Inc.</span>
-												</div>
-											</div>
-
-										</div>
-									</div>
-								</div> 
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- End Testimonial Slider -->
-
-    <%- include('../partials/footer.ejs') %>
-
-    <%- include('../partials/modals/cart.ejs') %>
-    <%- include('../partials/scripts.ejs') %>
+    <%- include('../partials/footer.ejs') %> <%-
+    include('../partials/modals/cart.ejs') %> <%-
+    include('../partials/scripts.ejs') %>
     <script type="text/javascript" src="assets/js/scripts.js"></script>
   </body>
 </html>

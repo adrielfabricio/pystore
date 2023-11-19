@@ -1,5 +1,5 @@
 <nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark" arial-label="Furni navigation bar">
-
+	
 	<div class="container">
 		<a class="navbar-brand" href="/">Pystore</a>
 
@@ -13,12 +13,20 @@
 					<a class="nav-link" href="/">Home</a>
 				</li>
 
+				<% if (!isAdmin) { %>
+				<li class="nav-item ">
+					<a class="nav-link" href="/shop">Loja</a>
+				</li>
 				<li class="nav-item ">
 					<a class="nav-link" href="/services">Serviços</a>
 				</li>
+				<li class="nav-item ">
+					<a class="nav-link" href="/faq">FAQ</a>
+				</li>
+				<% } %>
 
 				<% if (isAdmin) { %>
-				<li class="nav-item ">
+				<li class="nav-item">
 					<a class="nav-link" href="/admin">Produtos</a>
 				</li>
 

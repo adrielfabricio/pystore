@@ -1,4 +1,4 @@
- const express = require('express');
+const express = require('express');
 const multer = require('multer');
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
@@ -6,13 +6,13 @@ const methodOverride = require('method-override');
 // models
 const Product = require('./model/Product');
 const ProductCategory = require('./model/ProductCategory');
-const User = require('./model/User')
+const User = require('./model/User');
 // controllers
 const productController = require('./controllers/product_controller');
 const categoryController = require('./controllers/category_controller');
 const clientController = require('./controllers/user_controller');
 // constants
-const { port } = require('./config/constants');
+const { port, faqs } = require('./config/constants');
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -21,11 +21,11 @@ app.use(methodOverride('_method'));
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-      cb(null, 'uploads/'); // A pasta onde os arquivos serão armazenados
+    cb(null, 'uploads/'); // A pasta onde os arquivos serão armazenados
   },
   filename: function (req, file, cb) {
-      cb(null, file.originalname); // Use o nome original do arquivo
-  }
+    cb(null, file.originalname); // Use o nome original do arquivo
+  },
 });
 const upload = multer({ storage: storage });
 
@@ -39,18 +39,18 @@ app.use('/assets', express.static('assets'));
 app.use('/uploads', express.static('uploads'));
 
 // home page (list all products)
-app.get('/', async function (req, res) {
+app.get('/', async (req, res) => {
   const products = await productController.list_all();
 
   res.render('pages/home', {
-    products: products,
+    products: products.slice(0, 4),
     cart: cart,
     totalPrice: totalPrice,
   });
 });
 
 // Admin page (list all products and categories)
-app.get('/admin', async function (req, res) {
+app.get('/admin', async (req, res) => {
   const products = await productController.list_all();
   const categories = await categoryController.list_all();
   res.render('pages/admin', {
@@ -77,30 +77,47 @@ app.get('/customers', async (req, res) => {
 app.post('/customers', (req, res) => {
   const { name, email, address, cep } = req.body;
   const password = name + cep; // Default password
-  const user_type_id = 2;   // Default user type (client)
+  const user_type_id = 2; // Default user type (client)
 
-  const customer = new User(null, name, email, password, address, cep, user_type_id, 'client');
-  clientController.create(customer)
+  const customer = new User(
+    null,
+    name,
+    email,
+    password,
+    address,
+    cep,
+    user_type_id,
+    'client',
+  );
+  clientController.create(customer);
   res.redirect('/customers');
 });
-
 
 app.put('/customers/:id', (req, res) => {
   const id = parseInt(req.params.id);
   const { name, email, address, cep } = req.body;
 
   const password = name + cep; // Default password
-  const user_type_id = 2;   // Default user type (client)
+  const user_type_id = 2; // Default user type (client)
 
-  const customer = new User(id, name, email, password, address, cep, user_type_id, 'client');
-  clientController.update(customer)
+  const customer = new User(
+    id,
+    name,
+    email,
+    password,
+    address,
+    cep,
+    user_type_id,
+    'client',
+  );
+  clientController.update(customer);
   res.redirect('/customers');
 });
 
 app.delete('/customers/:id', (req, res) => {
   const customerId = parseInt(req.params.id);
 
-  clientController.destroy(customerId)
+  clientController.destroy(customerId);
   res.redirect('/customers');
 });
 
@@ -108,10 +125,10 @@ app.delete('/customers/:id', (req, res) => {
 app.post('/products', upload.single('image'), async (req, res) => {
   const { name, description, price, stock, category } = req.body;
   const file = req.file;
-  let image = ''
-  if (typeof file !='undefined') {
-    image = file.filename
-  } 
+  let image = '';
+  if (typeof file != 'undefined') {
+    image = file.filename;
+  }
 
   let category_in_db = await categoryController.retrieve_by_name(category);
   if (!category_in_db) {
@@ -119,20 +136,29 @@ app.post('/products', upload.single('image'), async (req, res) => {
     category_in_db = await categoryController.create(new_cat);
   }
 
-  const product = new Product(null, name, description, price, stock, image, category_in_db.id, category_in_db.name)
-  productController.create(product)
+  const product = new Product(
+    null,
+    name,
+    description,
+    price,
+    stock,
+    image,
+    category_in_db.id,
+    category_in_db.name,
+  );
+  productController.create(product);
   res.redirect('/admin');
 });
 
 // destroy product
 app.delete('/products/:id', (req, res) => {
   const productId = parseInt(req.params.id);
-  productController.destroy(productId)
+  productController.destroy(productId);
   res.redirect('/admin');
 });
 
 // update product
-app.put('/products/:id', async(req, res) => {
+app.put('/products/:id', async (req, res) => {
   const id = parseInt(req.params.id);
   const { name, description, price, stock, image, category } = req.body;
 
@@ -141,11 +167,19 @@ app.put('/products/:id', async(req, res) => {
     new_cat = new ProductCategory(null, category);
     category_in_db = await categoryController.create(new_cat);
   }
-  
-  const product = new Product(id, name, description, price, stock, image, category_in_db.id, category_in_db.name)
-  productController.update(product)
-  res.redirect('/admin');
 
+  const product = new Product(
+    id,
+    name,
+    description,
+    price,
+    stock,
+    image,
+    category_in_db.id,
+    category_in_db.name,
+  );
+  productController.update(product);
+  res.redirect('/admin');
 });
 
 // aux routes
@@ -166,7 +200,7 @@ app.get('/add-to-cart/:item', async (req, res) => {
       });
     }
   }
-  res.redirect('/')
+  res.redirect('/');
 });
 
 app.get('/clear-cart', (req, res) => {
@@ -176,18 +210,44 @@ app.get('/clear-cart', (req, res) => {
 
 // buy route
 app.post('/buy', async (req, res) => {
-  for (let item of cart) { 
-    item.stock = item.stock - item.quantity 
-    const product = new Product(item.id, item.name, item.description, item.price, item.stock, item.image, item.category_id, item.category)
-    productController.update(product)
+  for (let item of cart) {
+    item.stock = item.stock - item.quantity;
+    const product = new Product(
+      item.id,
+      item.name,
+      item.description,
+      item.price,
+      item.stock,
+      item.image,
+      item.category_id,
+      item.category,
+    );
+    productController.update(product);
   }
   cart = [];
   res.redirect('/');
 });
 
-app.listen(port, () => {
-  console.debug(`server started at http://localhost:${port}`);
+app.get('/faq', (req, res) => {
+  res.render('pages/faq', {
+    faqs,
+    cart,
+    totalPrice,
+  });
 });
 
+app.get('/shop', async (req, res) => {
+  const products = await productController.list_all();
+
+  res.render('pages/shop', {
+    products,
+    cart,
+    totalPrice,
+  });
+});
+
+app.listen(port, () => {
+  console.debug(`server started at http://192.168.15.12:${port}`);
+});
 
 // DROP DATABASE IF EXISTS your_database_name;
