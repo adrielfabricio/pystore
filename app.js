@@ -200,7 +200,7 @@ app.get('/add-to-cart/:item', async (req, res) => {
       });
     }
   }
-  res.redirect('/');
+  res.redirect('/shop');
 });
 
 app.get('/clear-cart', (req, res) => {
@@ -247,7 +247,7 @@ app.get('/shop', async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.debug(`server started at http://192.168.15.12:${port}`);
+  console.debug(`server started at http://localhost:${port}`);
 });
 
 // DROP DATABASE IF EXISTS your_database_name;
