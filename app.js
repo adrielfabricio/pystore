@@ -3,6 +3,15 @@ const multer = require('multer');
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
 
+// Connection with blockchain config
+const Web3 = require('web3');
+const providerUrl = 'http://localhost:8545'; // Por exemplo, ganache ou Infura
+const web3 = new Web3(new Web3.providers.HttpProvider(providerUrl));
+const contractAddress = '0x123...'; // Substituir pelo endereço do seu contrato na blockchain
+const abi = []; // Substituir pelo ABI do seu contrato
+
+const onlineStoreContract = new web3.eth.Contract(abi, contractAddress);
+
 // models
 const Product = require('./model/Product');
 const ProductCategory = require('./model/ProductCategory');
