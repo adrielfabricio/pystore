@@ -11,6 +11,9 @@ const User = require('./model/User');
 const productController = require('./controllers/product_controller');
 const categoryController = require('./controllers/category_controller');
 const clientController = require('./controllers/user_controller');
+const authController = require('./controllers/authController.js');
+// middlewares
+const authenticateToken = require('./middlewares/authMiddleware.js');
 // constants
 const { port, faqs } = require('./config/constants');
 
@@ -38,6 +41,11 @@ app.set('view engine', 'ejs');
 app.use('/assets', express.static('assets'));
 app.use('/uploads', express.static('uploads'));
 
+// Rotas públicas
+app.post('/register', authController.register);
+app.post('/login', authController.login);
+
+
 // home page (list all products)
 app.get('/', async (req, res) => {
   const products = await productController.list_all();
@@ -49,8 +57,10 @@ app.get('/', async (req, res) => {
   });
 });
 
+
+// Rotas protegidas
 // Admin page (list all products and categories)
-app.get('/admin', async (req, res) => {
+app.get('/admin', authenticateToken, async (req, res) => {
   const products = await productController.list_all();
   const categories = await categoryController.list_all();
   res.render('pages/admin', {
@@ -61,12 +71,12 @@ app.get('/admin', async (req, res) => {
 });
 
 // do nothing
-app.get('/services', (req, res) => {
+app.get('/services', authenticateToken, (req, res) => {
   res.render('pages/services');
 });
 
 // Admin page (list all clients)
-app.get('/customers', async (req, res) => {
+app.get('/customers', authenticateToken,async (req, res) => {
   const customers = await clientController.list_all();
   res.render('pages/customers', {
     isAdmin: true,
@@ -74,47 +84,64 @@ app.get('/customers', async (req, res) => {
   });
 });
 
-app.post('/customers', (req, res) => {
+app.post('/customers', authenticateToken, (req, res) => {
   const { name, email, address, cep } = req.body;
   const password = name + cep; // Default password
+  const password_hash = ''; // Default password hash, adjust as needed
   const user_type_id = 2; // Default user type (client)
+  const created_at = new Date();
+  const updated_at = new Date();
+  const wallet = ''; // Default wallet address, adjust as needed
 
   const customer = new User(
     null,
     name,
     email,
     password,
+    password_hash,
     address,
     cep,
     user_type_id,
-    'client',
+    created_at,
+    updated_at,
+    wallet,
+    'client'
   );
   clientController.create(customer);
   res.redirect('/customers');
 });
 
-app.put('/customers/:id', (req, res) => {
+app.put('/customers/:id', authenticateToken, (req, res) => {
   const id = parseInt(req.params.id);
   const { name, email, address, cep } = req.body;
 
   const password = name + cep; // Default password
+  const password_hash = ''; // Default password hash, adjust as needed
   const user_type_id = 2; // Default user type (client)
+  const created_at = new Date(); // Presuming you want to update this as well
+  const updated_at = new Date(); // Presuming you want to update this as well
+  const wallet = ''; // Default wallet address, adjust as needed
 
   const customer = new User(
     id,
     name,
     email,
     password,
+    password_hash,
     address,
     cep,
     user_type_id,
-    'client',
+    created_at,
+    updated_at,
+    wallet,
+    'client'
   );
   clientController.update(customer);
   res.redirect('/customers');
 });
 
-app.delete('/customers/:id', (req, res) => {
+
+app.delete('/customers/:id', authenticateToken, (req, res) => {
   const customerId = parseInt(req.params.id);
 
   clientController.destroy(customerId);
@@ -122,7 +149,7 @@ app.delete('/customers/:id', (req, res) => {
 });
 
 // create product
-app.post('/products', upload.single('image'), async (req, res) => {
+app.post('/products', authenticateToken, upload.single('image'), async (req, res) => {
   const { name, description, price, stock, category } = req.body;
   const file = req.file;
   let image = '';
@@ -151,14 +178,14 @@ app.post('/products', upload.single('image'), async (req, res) => {
 });
 
 // destroy product
-app.delete('/products/:id', (req, res) => {
+app.delete('/products/:id', authenticateToken, (req, res) => {
   const productId = parseInt(req.params.id);
   productController.destroy(productId);
   res.redirect('/admin');
 });
 
 // update product
-app.put('/products/:id', async (req, res) => {
+app.put('/products/:id', authenticateToken, async (req, res) => {
   const id = parseInt(req.params.id);
   const { name, description, price, stock, image, category } = req.body;
 
@@ -183,7 +210,7 @@ app.put('/products/:id', async (req, res) => {
 });
 
 // aux routes
-app.get('/add-to-cart/:item', async (req, res) => {
+app.get('/add-to-cart/:item', authenticateToken, async (req, res) => {
   const id = parseInt(req.params.item);
   const existingItem = cart.find(item => item.id === id);
 
@@ -203,13 +230,13 @@ app.get('/add-to-cart/:item', async (req, res) => {
   res.redirect('/shop');
 });
 
-app.get('/clear-cart', (req, res) => {
+app.get('/clear-cart', authenticateToken, (req, res) => {
   cart = [];
   res.redirect('/');
 });
 
 // buy route
-app.post('/buy', async (req, res) => {
+app.post('/buy', authenticateToken, async (req, res) => {
   for (let item of cart) {
     item.stock = item.stock - item.quantity;
     const product = new Product(
@@ -228,7 +255,7 @@ app.post('/buy', async (req, res) => {
   res.redirect('/');
 });
 
-app.get('/faq', (req, res) => {
+app.get('/faq', authenticateToken, (req, res) => {
   res.render('pages/faq', {
     faqs,
     cart,
@@ -236,7 +263,7 @@ app.get('/faq', (req, res) => {
   });
 });
 
-app.get('/shop', async (req, res) => {
+app.get('/shop', authenticateToken, async (req, res) => {
   const products = await productController.list_all();
 
   res.render('pages/shop', {
