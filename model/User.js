@@ -1,12 +1,16 @@
 class User {
-    constructor(id, name, email, password, address, zip_code, user_type_id, type) {
+    constructor(id, name, email, password, password_hash, address, zip_code, user_type_id, created_at, updated_at, wallet, type) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
+        this.password_hash = password_hash;
         this.address = address;
         this.zip_code = zip_code;
         this.user_type_id = user_type_id;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+        this.wallet = wallet;
         this.type = type;
     }
 
@@ -34,6 +38,12 @@ class User {
     setPassword(value) {
         this.password = value;
     }
+    getPasswordHash() {
+        return this.password_hash;
+    }
+    setPasswordHash(value) {
+        this.password_hash = value;
+    }
     getAddress() {
         return this.address;
     }
@@ -51,6 +61,24 @@ class User {
     }
     setUserTypeId(value) {
         this.user_type_id = value;
+    }
+    getCreatedAt() {
+        return this.created_at;
+    }
+    setCreatedAt(value) {
+        this.created_at = value;
+    }
+    getUpdatedAt() {
+        return this.updated_at;
+    }
+    setUpdatedAt(value) {
+        this.updated_at = value;
+    }
+    getWallet() {
+        return this.wallet;
+    }
+    setWallet(value) {
+        this.wallet = value;
     }
     getType() {
         return this.type;
