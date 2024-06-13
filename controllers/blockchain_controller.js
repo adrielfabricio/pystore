@@ -1,3 +1,4 @@
+const { web3, onlineStoreContract } = require('../config/web3_config')
 // Função para registrar uma venda
 async function registrarVenda(productId, quantity, price, buyerAddress) {
     try {

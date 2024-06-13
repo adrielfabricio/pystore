@@ -4,13 +4,7 @@ const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
 
 // Connection with blockchain config
-const Web3 = require('web3');
-const providerUrl = 'http://localhost:8545'; // Por exemplo, ganache ou Infura
-const web3 = new Web3(new Web3.providers.HttpProvider(providerUrl));
-const contractAddress = '0x123...'; // Substituir pelo endereço do seu contrato na blockchain
-const abi = []; // Substituir pelo ABI do seu contrato
-
-const onlineStoreContract = new web3.eth.Contract(abi, contractAddress);
+// const { web3, onlineStoreContract } = require('./config/web3-config');
 
 // models
 const Product = require('./model/Product');
@@ -20,7 +14,8 @@ const User = require('./model/User');
 const productController = require('./controllers/product_controller');
 const categoryController = require('./controllers/category_controller');
 const clientController = require('./controllers/user_controller');
-const authController = require('./controllers/authController.js');
+const authController = require('./controllers/auth_controller.js');
+const ethereumController = require('./controllers/blockchain_controller.js');
 // middlewares
 const authenticateToken = require('./middlewares/authMiddleware.js');
 // constants
@@ -259,6 +254,7 @@ app.post('/buy', authenticateToken, async (req, res) => {
       item.category,
     );
     productController.update(product);
+    await ethereumController.registrarVenda(item.id, item.quantity, item.price, '0xAC8E5d6b19be7b5AffCe4f77Dd67b8eBb5dc91Be');
   }
   cart = [];
   res.redirect('/');
