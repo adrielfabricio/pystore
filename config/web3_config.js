@@ -1,4 +1,4 @@
-const Web3 = require('web3');
+const { Web3 } = require('web3');
 
 // URL do Ganache
 const providerUrl = 'http://localhost:7545'; // URL padrão do Ganache
@@ -6,7 +6,7 @@ const providerUrl = 'http://localhost:7545'; // URL padrão do Ganache
 const web3 = new Web3(providerUrl);
 
 // ABI e endereço do contrato inteligente
-const contractAddress = '0xc790B47b70bf37111e9B9662CDF95f2920A657d2'; // Substitua pelo endereço do seu contrato
+const contractAddress = '0xCfca95b51FB24Faea35B6Fe8a6CDE851a6Fa3ff2'; // Substitua pelo endereço do seu contrato
 const contractABI = [
   {
     "inputs": [],
@@ -69,7 +69,7 @@ const contractABI = [
     "name": "owner",
     "outputs": [
       {
-        "internalType": "address",
+        "internalType": "address payable",
         "name": "",
         "type": "address"
       }
@@ -114,15 +114,16 @@ const contractABI = [
         "type": "uint256"
       },
       {
-        "internalType": "address",
+        "internalType": "address payable",
         "name": "_buyerAddress",
         "type": "address"
       }
     ],
     "name": "storeSale",
     "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "stateMutability": "payable",
+    "type": "function",
+    "payable": true
   },
   {
     "inputs": [],

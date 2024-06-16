@@ -214,7 +214,7 @@ app.put('/products/:id', authenticateToken, async (req, res) => {
 });
 
 // aux routes
-app.get('/add-to-cart/:item', authenticateToken, async (req, res) => {
+app.get('/add-to-cart/:item', async (req, res) => {
   const id = parseInt(req.params.item);
   const existingItem = cart.find(item => item.id === id);
 
@@ -234,13 +234,13 @@ app.get('/add-to-cart/:item', authenticateToken, async (req, res) => {
   res.redirect('/shop');
 });
 
-app.get('/clear-cart', authenticateToken, (req, res) => {
+app.get('/clear-cart', (req, res) => {
   cart = [];
   res.redirect('/');
 });
 
 // buy route
-app.post('/buy', authenticateToken, async (req, res) => {
+app.post('/buy', async (req, res) => {
   for (let item of cart) {
     item.stock = item.stock - item.quantity;
     const product = new Product(
@@ -254,7 +254,8 @@ app.post('/buy', authenticateToken, async (req, res) => {
       item.category,
     );
     productController.update(product);
-    await ethereumController.registrarVenda(item.id, item.quantity, item.price, '0xAC8E5d6b19be7b5AffCe4f77Dd67b8eBb5dc91Be');
+    const result  = await ethereumController.registrarVenda(item.id, item.quantity, item.price, '0x09886F7f8Db3A25F3B03470f73c5011633498400');
+    console.log(result); // Temporary log
   }
   cart = [];
   res.redirect('/');
@@ -268,7 +269,7 @@ app.get('/faq', authenticateToken, (req, res) => {
   });
 });
 
-app.get('/shop', authenticateToken, async (req, res) => {
+app.get('/shop', async (req, res) => {
   const products = await productController.list_all();
 
   res.render('pages/shop', {
