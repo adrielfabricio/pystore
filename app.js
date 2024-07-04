@@ -4,10 +4,10 @@ const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
 
 // Connection with blockchain config
-const Web3 = require('web3');
+const { Web3 } = require('web3');
 const providerUrl = 'http://localhost:8545'; // Por exemplo, ganache ou Infura
 const web3 = new Web3(new Web3.providers.HttpProvider(providerUrl));
-const contractAddress = '0x123...'; // Substituir pelo endereço do seu contrato na blockchain
+const contractAddress = '0x8103B0A8A00be2DDC778e6e7eaa21791Cd364625'; // Substituir pelo endereço do seu contrato na blockchain
 const abi = []; // Substituir pelo ABI do seu contrato
 
 const onlineStoreContract = new web3.eth.Contract(abi, contractAddress);
@@ -20,7 +20,7 @@ const User = require('./model/User');
 const productController = require('./controllers/product_controller');
 const categoryController = require('./controllers/category_controller');
 const clientController = require('./controllers/user_controller');
-const authController = require('./controllers/authController.js');
+const authController = require('./controllers/auth_controller.js');
 // middlewares
 const authenticateToken = require('./middlewares/authMiddleware.js');
 // constants
@@ -51,9 +51,10 @@ app.use('/assets', express.static('assets'));
 app.use('/uploads', express.static('uploads'));
 
 // Rotas públicas
+app.get('/login', (req, res) => res.render('pages/login'));
+app.get('/register', (req, res) => res.render('pages/register'));
 app.post('/register', authController.register);
 app.post('/login', authController.login);
-
 
 // home page (list all products)
 app.get('/', async (req, res) => {
@@ -65,7 +66,6 @@ app.get('/', async (req, res) => {
     totalPrice: totalPrice,
   });
 });
-
 
 // Rotas protegidas
 // Admin page (list all products and categories)
@@ -85,7 +85,7 @@ app.get('/services', authenticateToken, (req, res) => {
 });
 
 // Admin page (list all clients)
-app.get('/customers', authenticateToken,async (req, res) => {
+app.get('/customers', authenticateToken, async (req, res) => {
   const customers = await clientController.list_all();
   res.render('pages/customers', {
     isAdmin: true,
@@ -114,7 +114,7 @@ app.post('/customers', authenticateToken, (req, res) => {
     created_at,
     updated_at,
     wallet,
-    'client'
+    'client',
   );
   clientController.create(customer);
   res.redirect('/customers');
@@ -143,12 +143,11 @@ app.put('/customers/:id', authenticateToken, (req, res) => {
     created_at,
     updated_at,
     wallet,
-    'client'
+    'client',
   );
   clientController.update(customer);
   res.redirect('/customers');
 });
-
 
 app.delete('/customers/:id', authenticateToken, (req, res) => {
   const customerId = parseInt(req.params.id);
@@ -158,33 +157,38 @@ app.delete('/customers/:id', authenticateToken, (req, res) => {
 });
 
 // create product
-app.post('/products', authenticateToken, upload.single('image'), async (req, res) => {
-  const { name, description, price, stock, category } = req.body;
-  const file = req.file;
-  let image = '';
-  if (typeof file != 'undefined') {
-    image = file.filename;
-  }
+app.post(
+  '/products',
+  authenticateToken,
+  upload.single('image'),
+  async (req, res) => {
+    const { name, description, price, stock, category } = req.body;
+    const file = req.file;
+    let image = '';
+    if (typeof file != 'undefined') {
+      image = file.filename;
+    }
 
-  let category_in_db = await categoryController.retrieve_by_name(category);
-  if (!category_in_db) {
-    new_cat = new ProductCategory(null, category);
-    category_in_db = await categoryController.create(new_cat);
-  }
+    let category_in_db = await categoryController.retrieve_by_name(category);
+    if (!category_in_db) {
+      new_cat = new ProductCategory(null, category);
+      category_in_db = await categoryController.create(new_cat);
+    }
 
-  const product = new Product(
-    null,
-    name,
-    description,
-    price,
-    stock,
-    image,
-    category_in_db.id,
-    category_in_db.name,
-  );
-  productController.create(product);
-  res.redirect('/admin');
-});
+    const product = new Product(
+      null,
+      name,
+      description,
+      price,
+      stock,
+      image,
+      category_in_db.id,
+      category_in_db.name,
+    );
+    productController.create(product);
+    res.redirect('/admin');
+  },
+);
 
 // destroy product
 app.delete('/products/:id', authenticateToken, (req, res) => {
