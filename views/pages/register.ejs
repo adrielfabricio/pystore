@@ -21,7 +21,10 @@
             <h1 class="h3 font-weight-normal text-white">Cadastro</h1>
           </div>
           <div class="card-body p-4">
-            <form action="/register" method="POST">
+            <form
+              action="/register"
+              method="POST"
+              onsubmit="return validateForm()">
               <div class="form-group mb-3">
                 <label for="name" class="form-label">Nome</label>
                 <input
@@ -39,6 +42,48 @@
                   id="email"
                   name="email"
                   required />
+              </div>
+              <div class="row">
+                <div class="form-group col-md-6 mb-3 position-relative">
+                  <label for="password" class="form-label">Senha</label>
+                  <div class="input-group">
+                    <input
+                      type="password"
+                      class="form-control"
+                      id="password"
+                      name="password"
+                      required />
+                    <div class="input-group-append">
+                      <span
+                        class="input-group-text"
+                        onclick="togglePasswordVisibility('password', 'togglePasswordIcon')">
+                        <i id="togglePasswordIcon" class="fas fa-eye"></i>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group col-md-6 mb-3 position-relative">
+                  <label for="confirm_password" class="form-label"
+                    >Confirmação de Senha</label
+                  >
+                  <div class="input-group">
+                    <input
+                      type="password"
+                      class="form-control"
+                      id="confirm_password"
+                      name="confirm_password"
+                      required />
+                    <div class="input-group-append">
+                      <span
+                        class="input-group-text"
+                        onclick="togglePasswordVisibility('confirm_password', 'toggleConfirmPasswordIcon')">
+                        <i
+                          id="toggleConfirmPasswordIcon"
+                          class="fas fa-eye"></i>
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </div>
               <div class="form-group mb-3">
                 <label for="wallet" class="form-label"
@@ -71,6 +116,7 @@
                     required />
                 </div>
               </div>
+
               <button type="submit" class="btn btn-success btn-block py-2">
                 Cadastrar
               </button>
@@ -96,10 +142,38 @@
     <script
       type="text/javascript"
       src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
     <script type="text/javascript">
       $(document).ready(function () {
         $('#cep').mask('00000-000');
       });
+
+      function validateForm() {
+        const password = document.getElementById('password').value;
+        const confirmPassword =
+          document.getElementById('confirm_password').value;
+
+        if (password !== confirmPassword) {
+          alert('As senhas não coincidem. Por favor, verifique.');
+          return false;
+        }
+
+        return true;
+      }
+
+      function togglePasswordVisibility(id, iconId) {
+        const field = document.getElementById(id);
+        const icon = document.getElementById(iconId);
+        if (field.type === 'password') {
+          field.type = 'text';
+          icon.classList.remove('fa-eye');
+          icon.classList.add('fa-eye-slash');
+        } else {
+          field.type = 'password';
+          icon.classList.remove('fa-eye-slash');
+          icon.classList.add('fa-eye');
+        }
+      }
     </script>
   </body>
 </html>
