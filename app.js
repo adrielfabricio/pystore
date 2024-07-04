@@ -22,7 +22,7 @@ const categoryController = require('./controllers/category_controller');
 const clientController = require('./controllers/user_controller');
 const authController = require('./controllers/auth_controller.js');
 // middlewares
-const authenticateToken = require('./middlewares/authMiddleware.js');
+const authenticateToken = require('./middlewares/auth_middleware.js');
 // constants
 const { port, faqs } = require('./config/constants');
 
