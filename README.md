@@ -15,6 +15,42 @@ Tendo isso em mente, pretendemos oferecer produtos como:
 
 Dentro desse projeto Node, existe uma pasta chamada 'database', nela contém o código sql usado para criar o banco de dados, além de um arquivo 'populate' com um exemplo de criação de alguns registros para facilitar o uso do site após uma nova configuração
 
+## Funcionalidades
+
+- Catálogo de produtos Python.
+- Carrinho de compras.
+- Sistema de checkout.
+- Autenticação de usuários.
+
+## Estrutura de diretórios
+
+```
+pystore/
+├── models/
+│   ├── product.js
+│   ├── user.js
+│   └── order.js
+├── routes/
+│   ├── index.js
+│   ├── users.js
+│   └── products.js
+├── views/
+│   ├── index.ejs
+│   ├── login.ejs
+│   ├── register.ejs
+│   └── cart.ejs
+├── public/
+│   ├── css/
+│   │   └── style.css
+│   ├── js/
+│   │   └── app.js
+│   └── img/
+├── .env
+├── app.js
+└── package.json
+
+```
+
 ## Para rodar o projeto
 
 ### O banco de dados
