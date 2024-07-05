@@ -6,6 +6,7 @@ const database = require('../config/database.js');
 const secret = 'your_jwt_secret'; // Mantenha isso em um arquivo de configuração separado e seguro
 
 // Registro de usuário
+// TODO: adicionar autorização para o contrato inteligente
 async function register(req, res) {
   const { name, email, password, wallet, address, cep } = req.body;
   const password_hash = await bcrypt.hash(password, 10);
@@ -68,7 +69,9 @@ async function login(req, res) {
       secret,
       { expiresIn: '1h' },
     );
-    res.send({ token });
+    res.cookie('token', token, { httpOnly: true, secure: true, maxAge: 3600000 });
+    res.cookie('wallet', user.wallet, { httpOnly: true, secure: true, maxAge: 3600000 })
+    res.status(201).redirect('/shop');
   });
 }
 

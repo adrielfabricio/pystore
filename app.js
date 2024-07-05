@@ -2,6 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
+const cookieParser = require('cookie-parser');
 
 
 // models
@@ -23,6 +24,7 @@ const crypto = require('crypto');
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(cookieParser());
 app.use(methodOverride('_method'));
 
 const storage = multer.diskStorage({
@@ -49,6 +51,11 @@ app.get('/login', (req, res) => res.render('pages/login'));
 app.get('/register', (req, res) => res.render('pages/register'));
 app.post('/register', authController.register);
 app.post('/login', authController.login);
+app.get('/logout', (req, res) => {
+  res.clearCookie('token');
+  res.redirect('/');
+});
+
 
 // home page (list all products)
 app.get('/', async (req, res) => {
@@ -108,7 +115,6 @@ app.post('/customers', authenticateToken, (req, res) => {
     wallet = wallet,
     type = 'client',
   );
-  console.log(customer);
   
   clientController.create(customer);
   res.redirect('/customers');
@@ -217,7 +223,7 @@ app.put('/products/:id', authenticateToken, async (req, res) => {
 });
 
 // aux routes
-app.get('/add-to-cart/:item', async (req, res) => {
+app.get('/add-to-cart/:item', authenticateToken ,async (req, res) => {
   const id = parseInt(req.params.item);
   const existingItem = cart.find(item => item.id === id);
 
@@ -237,13 +243,13 @@ app.get('/add-to-cart/:item', async (req, res) => {
   res.redirect('/shop');
 });
 
-app.get('/clear-cart', (req, res) => {
+app.get('/clear-cart', authenticateToken, (req, res) => {
   cart = [];
   res.redirect('/');
 });
 
 // buy route
-app.post('/buy', async (req, res) => {
+app.post('/buy', authenticateToken, async (req, res) => {
   for (let item of cart) {
     item.stock = item.stock - item.quantity;
     const product = new Product(
@@ -257,8 +263,9 @@ app.post('/buy', async (req, res) => {
       item.category,
     );
     productController.update(product);
-    const result  = await ethereumController.registrarVenda(item.id, item.quantity, item.price, '0x09886F7f8Db3A25F3B03470f73c5011633498400');
-    console.log(result); // Temporary log
+    const wallet = req.cookies.wallet;
+    console.log(wallet);
+    const result  = await ethereumController.registrarVenda(item.id, item.quantity, item.price, wallet);
   }
   cart = [];
   res.redirect('/');
@@ -274,7 +281,6 @@ app.get('/faq', authenticateToken, (req, res) => {
 
 app.get('/shop', async (req, res) => {
   const products = await productController.list_all();
-
   res.render('pages/shop', {
     products,
     cart,

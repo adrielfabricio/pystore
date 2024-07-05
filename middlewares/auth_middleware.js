@@ -2,13 +2,12 @@ const jwt = require('jsonwebtoken');
 const secret = 'your_jwt_secret'; // Mantenha isso em um arquivo de configuração separado e seguro
 
 function authenticateToken(req, res, next) {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
+  const token = req.cookies.token;
 
-  if (!token) return res.sendStatus(401);
+  if (!token) return res.status(401).redirect('/login');
 
   jwt.verify(token, secret, (err, user) => {
-    if (err) return res.sendStatus(403);
+    if (err) return res.status(403).redirect('/login');
     req.user = user;
     next();
   });
