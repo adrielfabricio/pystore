@@ -1,4 +1,4 @@
-const { web3, onlineStoreContract } = require('../config/web3_config')
+const { web3, onlineStoreContract, deployerAddress } = require('../config/web3_config')
 // Função para registrar uma venda
 async function registrarVenda(productId, quantity, price, buyerAddress) {
     try {
@@ -30,7 +30,19 @@ async function recuperarVendas() {
     }
 }
 
+async function authorizeWallet(wallet) {
+    if (!wallet) {
+      return res.status(401).send('Você não está autorizado a acessar esta página');
+    }
+
+    // setting authorizedAccount to true using the deployer address as the sender
+    const result = await onlineStoreContract.methods.setAuthorizedAccount(wallet, true).send({ from: deployerAddress });
+    console.log('Carteira autorizada:', result);
+    return result;
+}
+
 module.exports = {
     registrarVenda: registrarVenda,
     recuperarVendas: recuperarVendas,
+    authorizeWallet: authorizeWallet
   };

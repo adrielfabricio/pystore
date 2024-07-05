@@ -165,8 +165,9 @@ const contractABI = [
 
 
 const onlineStoreContract = new web3.eth.Contract(contractABI, contractAddress);
-
+const deployerAddress = '0xf561be48ccb9C4fED09651A2623A9183184e9F45'; // Substitua pelo endereço do seu contrato
 module.exports = {
   web3,
-  onlineStoreContract
+  onlineStoreContract,
+  deployerAddress
 };

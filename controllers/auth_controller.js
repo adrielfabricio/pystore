@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../model/User.js');
 const database = require('../config/database.js');
-
+const ethereumController = require('../controllers/blockchain_controller.js');
 const secret = 'your_jwt_secret'; // Mantenha isso em um arquivo de configuração separado e seguro
 
 // Registro de usuário
@@ -40,6 +40,8 @@ async function register(req, res) {
     user.getWallet(),
   ];
 
+  await ethereumController.authorizeWallet(wallet);
+
   let sql =
     'INSERT INTO users (name, email, password, password_hash, address, zip_code, user_type_id, created_at, updated_at, wallet) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
@@ -58,11 +60,11 @@ async function login(req, res) {
   let sql = 'SELECT * FROM users WHERE email = ?';
   database.query(sql, [email], async function (err, results) {
     if (err) return res.status(500).send(err);
-    if (results.length === 0) return res.status(401).send('User not found');
+    if (results.length === 0) return res.status(401).redirect('/login');
 
     const user = results[0];
     const isValid = await bcrypt.compare(password, user.password_hash);
-    if (!isValid) return res.status(401).send('Invalid password');
+    if (!isValid) return res.status(401).redirect('/login');
 
     const token = jwt.sign(
       { id: user.id, user_type_id: user.user_type_id },

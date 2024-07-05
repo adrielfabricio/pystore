@@ -53,7 +53,7 @@ app.post('/register', authController.register);
 app.post('/login', authController.login);
 app.get('/logout', (req, res) => {
   res.clearCookie('token');
-  res.redirect('/');
+  res.redirect('/login');
 });
 
 
