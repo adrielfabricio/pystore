@@ -14,7 +14,7 @@ async function register(req, res) {
     null,
     name,
     email,
-    password,  // Keep password for compatibility but do not use it for anything else
+    password, // Keep password for compatibility but do not use it for anything else
     hashedPassword,
     address,
     zip_code,
@@ -22,7 +22,7 @@ async function register(req, res) {
     new Date(),
     new Date(),
     '', // wallet
-    'client'
+    'client',
   );
 
   const params = [
@@ -35,11 +35,12 @@ async function register(req, res) {
     user.getUserTypeId(),
     user.getCreatedAt(),
     user.getUpdatedAt(),
-    user.getWallet()
+    user.getWallet(),
   ];
 
-  let sql = 'INSERT INTO users (name, email, password, password_hash, address, zip_code, user_type_id, created_at, updated_at, wallet) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-  
+  let sql =
+    'INSERT INTO users (name, email, password, password_hash, address, zip_code, user_type_id, created_at, updated_at, wallet) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+
   database.query(sql, params, function (err, result) {
     if (err) return res.status(500).send(err);
     res.status(201).send('User registered');
@@ -59,12 +60,16 @@ async function login(req, res) {
     const isValid = await bcrypt.compare(password, user.password_hash);
     if (!isValid) return res.status(401).send('Invalid password');
 
-    const token = jwt.sign({ id: user.id, user_type_id: user.user_type_id }, secret, { expiresIn: '1h' });
+    const token = jwt.sign(
+      { id: user.id, user_type_id: user.user_type_id },
+      secret,
+      { expiresIn: '1h' },
+    );
     res.send({ token });
   });
 }
 
 module.exports = {
   register,
-  login
+  login,
 };
