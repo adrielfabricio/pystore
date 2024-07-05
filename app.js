@@ -18,6 +18,7 @@ const ethereumController = require('./controllers/blockchain_controller.js');
 const authenticateToken = require('./middlewares/auth_middleware.js');
 // constants
 const { port, faqs } = require('./config/constants');
+const crypto = require('crypto');
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -78,7 +79,7 @@ app.get('/services', authenticateToken, (req, res) => {
 });
 
 // Admin page (list all clients)
-app.get('/customers', authenticateToken, async (req, res) => {
+app.get('/customers', async (req, res) => {
   const customers = await clientController.list_all();
   res.render('pages/customers', {
     isAdmin: true,
@@ -87,28 +88,28 @@ app.get('/customers', authenticateToken, async (req, res) => {
 });
 
 app.post('/customers', authenticateToken, (req, res) => {
-  const { name, email, address, cep } = req.body;
-  const password = name + cep; // Default password
-  const password_hash = ''; // Default password hash, adjust as needed
+  const { name, email, password, wallet, address, cep } = req.body;
+  const password_hash = crypto.createHash('sha256').update(password).digest('hex');
   const user_type_id = 2; // Default user type (client)
   const created_at = new Date();
   const updated_at = new Date();
-  const wallet = ''; // Default wallet address, adjust as needed
 
   const customer = new User(
-    null,
-    name,
-    email,
-    password,
-    password_hash,
-    address,
-    cep,
-    user_type_id,
-    created_at,
-    updated_at,
-    wallet,
-    'client',
+    id = null,
+    name = name,
+    email = email,
+    password = password,
+    password_hash = password_hash,
+    address = address,
+    zip_code = cep,
+    user_type_id = user_type_id,
+    created_at = created_at,
+    updated_at = updated_at,
+    wallet = wallet,
+    type = 'client',
   );
+  console.log(customer);
+  
   clientController.create(customer);
   res.redirect('/customers');
 });

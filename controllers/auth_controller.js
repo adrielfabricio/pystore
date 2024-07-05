@@ -7,21 +7,22 @@ const secret = 'your_jwt_secret'; // Mantenha isso em um arquivo de configuraç�
 
 // Registro de usuário
 async function register(req, res) {
-  const { name, email, password, address, zip_code, user_type_id } = req.body;
-  const hashedPassword = await bcrypt.hash(password, 10);
+  const { name, email, password, wallet, address, cep } = req.body;
+  const password_hash = await bcrypt.hash(password, 10);
+  const user_type_id = 2; // Default user type (client)
 
   const user = new User(
     null,
     name,
     email,
-    password, // Keep password for compatibility but do not use it for anything else
-    hashedPassword,
+    password,
+    password_hash,
     address,
-    zip_code,
+    cep,
     user_type_id,
     new Date(),
     new Date(),
-    '', // wallet
+    wallet,
     'client',
   );
 
@@ -43,7 +44,9 @@ async function register(req, res) {
 
   database.query(sql, params, function (err, result) {
     if (err) return res.status(500).send(err);
-    res.status(201).send('User registered');
+    console.log('1 record inserted');
+    
+    res.status(201).redirect('/login');
   });
 }
 
