@@ -1,13 +1,12 @@
+const { web3, onlineStoreContract, deployerAddress } = require('../config/web3_config')
 // Função para registrar uma venda
 async function registrarVenda(productId, quantity, price, buyerAddress) {
     try {
-        // Assinar a transação com a conta do comprador (necessário para pagar gas)
-        const accounts = await web3.eth.getAccounts();
-        const account = accounts[0]; // Conta do comprador (pode ser configurável)
-
-        // Chamar a função do contrato para armazenar a venda
-        const result = await onlineStoreContract.methods.storeSale(productId, quantity, price, buyerAddress)
-            .send({ from: account });
+        
+        const weiPrice = web3.utils.toWei(price.toString(), 'ether');
+        const totalPrice = weiPrice * quantity;
+        const result = await onlineStoreContract.methods.storeSale(productId, quantity, weiPrice, buyerAddress)
+            .send({ from: buyerAddress, value: totalPrice, gas: 3000000});
 
         console.log('Venda registrada com sucesso:', result);
         return result;
@@ -31,7 +30,19 @@ async function recuperarVendas() {
     }
 }
 
+async function authorizeWallet(wallet) {
+    if (!wallet) {
+      return res.status(401).send('Você não está autorizado a acessar esta página');
+    }
+
+    // setting authorizedAccount to true using the deployer address as the sender
+    const result = await onlineStoreContract.methods.setAuthorizedAccount(wallet, true).send({ from: deployerAddress });
+    console.log('Carteira autorizada:', result);
+    return result;
+}
+
 module.exports = {
     registrarVenda: registrarVenda,
     recuperarVendas: recuperarVendas,
+    authorizeWallet: authorizeWallet
   };

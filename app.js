@@ -2,15 +2,8 @@ const express = require('express');
 const multer = require('multer');
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
+const cookieParser = require('cookie-parser');
 
-// Connection with blockchain config
-const Web3 = require('web3');
-const providerUrl = 'http://localhost:8545'; // Por exemplo, ganache ou Infura
-const web3 = new Web3(new Web3.providers.HttpProvider(providerUrl));
-const contractAddress = '0x123...'; // Substituir pelo endereço do seu contrato na blockchain
-const abi = []; // Substituir pelo ABI do seu contrato
-
-const onlineStoreContract = new web3.eth.Contract(abi, contractAddress);
 
 // models
 const Product = require('./model/Product');
@@ -20,15 +13,18 @@ const User = require('./model/User');
 const productController = require('./controllers/product_controller');
 const categoryController = require('./controllers/category_controller');
 const clientController = require('./controllers/user_controller');
-const authController = require('./controllers/authController.js');
+const authController = require('./controllers/auth_controller.js');
+const ethereumController = require('./controllers/blockchain_controller.js');
 // middlewares
-const authenticateToken = require('./middlewares/authMiddleware.js');
+const authenticateToken = require('./middlewares/auth_middleware.js');
 // constants
 const { port, faqs } = require('./config/constants');
+const crypto = require('crypto');
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(cookieParser());
 app.use(methodOverride('_method'));
 
 const storage = multer.diskStorage({
@@ -51,8 +47,14 @@ app.use('/assets', express.static('assets'));
 app.use('/uploads', express.static('uploads'));
 
 // Rotas públicas
+app.get('/login', (req, res) => res.render('pages/login'));
+app.get('/register', (req, res) => res.render('pages/register'));
 app.post('/register', authController.register);
 app.post('/login', authController.login);
+app.get('/logout', (req, res) => {
+  res.clearCookie('token');
+  res.redirect('/login');
+});
 
 
 // home page (list all products)
@@ -65,7 +67,6 @@ app.get('/', async (req, res) => {
     totalPrice: totalPrice,
   });
 });
-
 
 // Rotas protegidas
 // Admin page (list all products and categories)
@@ -85,7 +86,7 @@ app.get('/services', authenticateToken, (req, res) => {
 });
 
 // Admin page (list all clients)
-app.get('/customers', authenticateToken,async (req, res) => {
+app.get('/customers', async (req, res) => {
   const customers = await clientController.list_all();
   res.render('pages/customers', {
     isAdmin: true,
@@ -94,28 +95,27 @@ app.get('/customers', authenticateToken,async (req, res) => {
 });
 
 app.post('/customers', authenticateToken, (req, res) => {
-  const { name, email, address, cep } = req.body;
-  const password = name + cep; // Default password
-  const password_hash = ''; // Default password hash, adjust as needed
+  const { name, email, password, wallet, address, cep } = req.body;
+  const password_hash = crypto.createHash('sha256').update(password).digest('hex');
   const user_type_id = 2; // Default user type (client)
   const created_at = new Date();
   const updated_at = new Date();
-  const wallet = ''; // Default wallet address, adjust as needed
 
   const customer = new User(
-    null,
-    name,
-    email,
-    password,
-    password_hash,
-    address,
-    cep,
-    user_type_id,
-    created_at,
-    updated_at,
-    wallet,
-    'client'
+    id = null,
+    name = name,
+    email = email,
+    password = password,
+    password_hash = password_hash,
+    address = address,
+    zip_code = cep,
+    user_type_id = user_type_id,
+    created_at = created_at,
+    updated_at = updated_at,
+    wallet = wallet,
+    type = 'client',
   );
+  
   clientController.create(customer);
   res.redirect('/customers');
 });
@@ -143,12 +143,11 @@ app.put('/customers/:id', authenticateToken, (req, res) => {
     created_at,
     updated_at,
     wallet,
-    'client'
+    'client',
   );
   clientController.update(customer);
   res.redirect('/customers');
 });
-
 
 app.delete('/customers/:id', authenticateToken, (req, res) => {
   const customerId = parseInt(req.params.id);
@@ -158,33 +157,38 @@ app.delete('/customers/:id', authenticateToken, (req, res) => {
 });
 
 // create product
-app.post('/products', authenticateToken, upload.single('image'), async (req, res) => {
-  const { name, description, price, stock, category } = req.body;
-  const file = req.file;
-  let image = '';
-  if (typeof file != 'undefined') {
-    image = file.filename;
-  }
+app.post(
+  '/products',
+  authenticateToken,
+  upload.single('image'),
+  async (req, res) => {
+    const { name, description, price, stock, category } = req.body;
+    const file = req.file;
+    let image = '';
+    if (typeof file != 'undefined') {
+      image = file.filename;
+    }
 
-  let category_in_db = await categoryController.retrieve_by_name(category);
-  if (!category_in_db) {
-    new_cat = new ProductCategory(null, category);
-    category_in_db = await categoryController.create(new_cat);
-  }
+    let category_in_db = await categoryController.retrieve_by_name(category);
+    if (!category_in_db) {
+      new_cat = new ProductCategory(null, category);
+      category_in_db = await categoryController.create(new_cat);
+    }
 
-  const product = new Product(
-    null,
-    name,
-    description,
-    price,
-    stock,
-    image,
-    category_in_db.id,
-    category_in_db.name,
-  );
-  productController.create(product);
-  res.redirect('/admin');
-});
+    const product = new Product(
+      null,
+      name,
+      description,
+      price,
+      stock,
+      image,
+      category_in_db.id,
+      category_in_db.name,
+    );
+    productController.create(product);
+    res.redirect('/admin');
+  },
+);
 
 // destroy product
 app.delete('/products/:id', authenticateToken, (req, res) => {
@@ -219,7 +223,7 @@ app.put('/products/:id', authenticateToken, async (req, res) => {
 });
 
 // aux routes
-app.get('/add-to-cart/:item', authenticateToken, async (req, res) => {
+app.get('/add-to-cart/:item', authenticateToken ,async (req, res) => {
   const id = parseInt(req.params.item);
   const existingItem = cart.find(item => item.id === id);
 
@@ -259,6 +263,9 @@ app.post('/buy', authenticateToken, async (req, res) => {
       item.category,
     );
     productController.update(product);
+    const wallet = req.cookies.wallet;
+    console.log(wallet);
+    const result  = await ethereumController.registrarVenda(item.id, item.quantity, item.price, wallet);
   }
   cart = [];
   res.redirect('/');
@@ -272,9 +279,8 @@ app.get('/faq', authenticateToken, (req, res) => {
   });
 });
 
-app.get('/shop', authenticateToken, async (req, res) => {
+app.get('/shop', async (req, res) => {
   const products = await productController.list_all();
-
   res.render('pages/shop', {
     products,
     cart,
